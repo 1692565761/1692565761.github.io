@@ -1,0 +1,73 @@
+#footer {
+	background: rgba(255,255,255,.15);
+	color: #000;
+	border-top-right-radius: 20px;
+	border-top-left-radius: 20px;
+	backdrop-filter: saturate(100%) blur(5px)
+}
+
+#footer::before {
+	background: rgba(255,255,255,.15)
+}
+
+#footer #footer-wrap {
+	color: var(--font-color)
+}
+
+#footer #footer-wrap a {
+	color: var(--font-color)
+}
+
+body,html {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/arrow.cur'),auto!important
+}
+
+.player-avatar img {
+	border-radius: 10%;
+	padding: 10px;
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/btn.cur'),auto!important
+}
+
+a:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/link.cur'),auto
+}
+
+input:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/input.cur'),auto
+}
+
+button:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/btn.cur'),auto
+}
+
+i:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/link.cur'),auto
+}
+
+#footer-wrap a:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/hf.cur'),auto
+}
+
+#pagination .page-number:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/i.cur'),auto
+}
+
+#nav .site-page:hover {
+	cursor: url('https://cdn.jsdelivr.net/npm/akilar-candyassets/cur/hf.cur'),auto
+}
+
+svg.icon {
+	width: 1em;
+	height: 1em;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	overflow: hidden
+}
+
+#recent-posts>.recent-post-item,.layout_page>div:first-child:not(.recent-posts),.layout_post>#page,.layout_post>#post,.read-mode .layout_post>#post {
+	background: var(--light_bg_color)
+}
+
+#aside-content .card-widget {
+	background: var(--light_bg_color)
+}

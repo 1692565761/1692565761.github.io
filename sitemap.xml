@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/23/DNS-forward-and-reverse-resolution/</loc>
+    
+    <lastmod>2021-11-23</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/18/Problems-of-Windows-Server/</loc>
+    
+    <lastmod>2021-11-23</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/22/yum-local-source-configuration/</loc>
+    
+    <lastmod>2021-11-22</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/19/kdc-nfs-linkage/</loc>
+    
+    <lastmod>2021-11-22</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/13/Mail-server-Postfix/</loc>
+    
+    <lastmod>2021-11-22</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/about/index.html</loc>
+    
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/link/index.html</loc>
+    
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/21/Domain-migration/</loc>
+    
+    <lastmod>2021-11-21</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/movies/index.html</loc>
+    
+    <lastmod>2021-11-19</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/Active-Directory-Domain-Services-Overview/</loc>
+    
+    <lastmod>2021-11-19</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/17/keepalived-profile/</loc>
+    
+    <lastmod>2021-11-17</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/16/KeepalivedVSHeartbeat/</loc>
+    
+    <lastmod>2021-11-16</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/15/Keepalived-principle/</loc>
+    
+    <lastmod>2021-11-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/index.html</loc>
+    
+    <lastmod>2021-11-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/categories/index.html</loc>
+    
+    <lastmod>2021-11-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/15/DHCP-Server/</loc>
+    
+    <lastmod>2021-11-15</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/12/Docker-quick-start/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/Self-signed-certificate/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/Linux-related-concepts/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/Centos8-certification-authority/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/CentOS-single-user-mode-reset-password/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/Centos7-certification-authority/</loc>
+    
+    <lastmod>2021-11-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/What-is-a-digital-signature/</loc>
+    
+    <lastmod>2021-11-11</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/2021/11/11/hello-world/</loc>
+    
+    <lastmod>2021-11-11</lastmod>
+    
+  </url>
+  
+
+  <url>
+    <loc>https://www.hnswxx.cn/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/%E8%AF%81%E4%B9%A6/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/Centos7/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/Centos8/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/DNS/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/keepalived/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/Kerberos/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/NFS/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/YUM/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/WindowServer2019/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/DHCP/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/%E9%B8%9F%E5%93%A5%E7%9A%84Linux%E7%A7%81%E6%88%BF%E8%8F%9C/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/docker/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/postfix/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/%E9%82%AE%E4%BB%B6/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+
+  
+  <url>
+    <loc>https://www.hnswxx.cn/categories/Linux/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/categories/Windows/</loc>
+    <lastmod>2021-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+</urlset>
