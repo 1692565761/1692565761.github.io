@@ -4,7 +4,34 @@
   
     
     <entry>
-      <title>DNS正反向解析</title>
+      <title>linux_dns_secondary_server</title>
+      <link href="/2021/11/24/linux-dns-secondary-server/"/>
+      <url>/2021/11/24/linux-dns-secondary-server/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+      
+      
+      <categories>
+          
+          <category> Linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Centos8 </tag>
+            
+            <tag> DNS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Linux-DNS正反向解析</title>
       <link href="/2021/11/23/DNS-forward-and-reverse-resolution/"/>
       <url>/2021/11/23/DNS-forward-and-reverse-resolution/</url>
       

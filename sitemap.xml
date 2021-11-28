@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.hnswxx.cn/2021/11/24/linux-dns-secondary-server/</loc>
+    
+    <lastmod>2021-11-24</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.hnswxx.cn/2021/11/23/DNS-forward-and-reverse-resolution/</loc>
     
     <lastmod>2021-11-24</lastmod>
@@ -172,7 +179,7 @@
 
   <url>
     <loc>https://www.hnswxx.cn/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -180,105 +187,105 @@
   
   <url>
     <loc>https://www.hnswxx.cn/tags/%E8%AF%81%E4%B9%A6/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/Centos7/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/Centos8/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/DNS/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/keepalived/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/Kerberos/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/NFS/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/YUM/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/WindowServer2019/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/DHCP/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/%E9%B8%9F%E5%93%A5%E7%9A%84Linux%E7%A7%81%E6%88%BF%E8%8F%9C/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/docker/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/postfix/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/tags/%E9%82%AE%E4%BB%B6/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -287,14 +294,14 @@
   
   <url>
     <loc>https://www.hnswxx.cn/categories/Linux/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.hnswxx.cn/categories/Windows/</loc>
-    <lastmod>2021-11-24</lastmod>
+    <lastmod>2021-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
