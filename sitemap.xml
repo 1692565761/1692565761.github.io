@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.hnswxx.cn/2021/12/10/centos8-gateway-server/</loc>
+    
+    <lastmod>2021-12-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.hnswxx.cn/2021/12/10/mariaDB-master-slave-replication/</loc>
     
     <lastmod>2021-12-10</lastmod>
@@ -23,14 +30,14 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/23/DNS-forward-and-reverse-resolution/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/23/dns-forward-and-reverse-resolution/</loc>
     
     <lastmod>2021-11-24</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/18/Problems-of-Windows-Server/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/18/problems-of-windows-server/</loc>
     
     <lastmod>2021-11-23</lastmod>
     
@@ -51,7 +58,7 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/13/Mail-server-Postfix/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/13/mail-server-postfix/</loc>
     
     <lastmod>2021-11-22</lastmod>
     
@@ -72,7 +79,7 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/21/Domain-migration/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/21/domain-migration/</loc>
     
     <lastmod>2021-11-21</lastmod>
     
@@ -86,7 +93,7 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/Active-Directory-Domain-Services-Overview/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/active-directory-domain-services-overview/</loc>
     
     <lastmod>2021-11-19</lastmod>
     
@@ -100,14 +107,14 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/16/KeepalivedVSHeartbeat/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/16/keepalived_vs_heartbeat/</loc>
     
     <lastmod>2021-11-16</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/15/Keepalived-principle/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/15/keepalived-principle/</loc>
     
     <lastmod>2021-11-15</lastmod>
     
@@ -128,56 +135,49 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/15/DHCP-Server/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/15/dhcp-server/</loc>
     
     <lastmod>2021-11-15</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/12/Docker-quick-start/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/self-signed-certificate/</loc>
     
     <lastmod>2021-11-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/Self-signed-certificate/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/linux-related-concepts/</loc>
     
     <lastmod>2021-11-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/Linux-related-concepts/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/centos8-certification-authority/</loc>
     
     <lastmod>2021-11-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/Centos8-certification-authority/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/centos-single-user-mode-reset-password/</loc>
     
     <lastmod>2021-11-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/CentOS-single-user-mode-reset-password/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/centos7-certification-authority/</loc>
     
     <lastmod>2021-11-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/Centos7-certification-authority/</loc>
-    
-    <lastmod>2021-11-12</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.hnswxx.cn/2021/11/11/What-is-a-digital-signature/</loc>
+    <loc>https://www.hnswxx.cn/2021/11/11/what-is-a-digital-signature/</loc>
     
     <lastmod>2021-11-11</lastmod>
     
@@ -284,13 +284,6 @@
   </url>
   
   <url>
-    <loc>https://www.hnswxx.cn/tags/docker/</loc>
-    <lastmod>2021-12-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://www.hnswxx.cn/tags/postfix/</loc>
     <lastmod>2021-12-10</lastmod>
     <changefreq>daily</changefreq>
@@ -306,6 +299,13 @@
   
   <url>
     <loc>https://www.hnswxx.cn/tags/MariaDB/</loc>
+    <lastmod>2021-12-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/%E7%BD%91%E5%85%B3/</loc>
     <lastmod>2021-12-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
