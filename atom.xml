@@ -6,7 +6,7 @@
   <link href="https://www.hnswxx.cn/atom.xml" rel="self"/>
   
   <link href="https://www.hnswxx.cn/"/>
-  <updated>2021-12-10T09:00:53.000Z</updated>
+  <updated>2021-12-11T01:21:02.000Z</updated>
   <id>https://www.hnswxx.cn/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>掌握Windows Server 2012 网卡聚合（NIC Teaming）</title>
+    <link href="https://www.hnswxx.cn/2021/12/11/nic-teaming/"/>
+    <id>https://www.hnswxx.cn/2021/12/11/nic-teaming/</id>
+    <published>2021-12-11T01:08:37.000Z</published>
+    <updated>2021-12-11T01:21:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>Windows Server 2012的推出被称为“云操作系统“，想必这个操作系统在虚拟化领域，在网络和存储层面，在接入和安全层面都会有很有实力的功能体现。今天给大家介绍的网卡聚合能力就是充分利用汇总方式提高服务器整体网络性能，进而实现在高密度业务负载环境，高可用网络环境下的需求，当然除了网卡聚合功能单方面提升消除CPU的瓶颈也是重点，例如Offload卡，SRIOV, RSS，VMQ队列等等技术在Server 2012中你都能找到配套的核心技术支撑。今天这篇博客重点介绍一下Windows Server 2012中网卡聚合的功能。</p><p>说到网卡聚合，可能大家并不陌生，而且这个在”虚拟化世界“里尤为重要的功能，原来Windows Server 2008 R2中并不能提供支持，而是需要依靠HP，DELL，Intel，Broadcom等公司自己提供的软件进行设置和支持，但是这是不够的，要知道通过一个硬件厂商提供的聚合功能软件仅能对同种品牌的网卡进行统一的支持，这对于一个要求具有更多选择权和灵活性的数据中心而言是不够好的。当然你知道的，在Windows Server 2012中我们苦等的内置的，虚拟化环境所依赖的功能终于实现了在操作系统中的预置；因此充分了解合理利用这个功能是十分有益的。</p><p>那么什么是网络聚合或者Windows Server 2012中定义的网络聚合？在Server 2012中网络聚合有种称谓叫做LBOF（Load Balance and failover)字面上也很好理解，就是负载均衡同时实现故障切换功能的网络通道，熟悉这个LBOF灰常有意义，因为实现和查看网卡聚合状态需要用到的Powershell CMDLET就涉及了这个词汇；有了这个操作系统层面的功能，就可以将不同品牌的同质的网卡进行组合实现：</p><ol><li><p>网络带宽捆绑</p></li><li><p>当网络组件出现故障时可以被检测到并自动进行故障转移</p></li></ol><p>举例来说如果你不是配置成“主备”模式而是“双活”模式的网卡聚合，那么两个1GbE的千兆网卡可以实现2Gb的总吞吐，如果是两个万兆网卡就可以实现20Gb的总吞吐以此类推。<strong>Windows Server 2012支持多少个网卡进行捆绑呢？答案是32个！这是个绝对足够大的带宽：</strong></p><p> <a href="https://imgtu.com/i/oTpAiR"><img src="https://s1.ax1x.com/2021/12/11/oTpAiR.png" alt="oTpAiR.png"></a></p><p>Server 2012支持两种网络聚合模式，在配置网络聚合的时候默认的是选择第一种模式：</p><ol><li><p>交换机独立模式<br>这种模式最为通用，因为不要求交换机参与网络聚合，因此交换机并不知道在聚合网络中的网卡属于主机中一个网卡聚合组，所以网卡可以连接不同的交换机不过交换机独立模式并不要求聚合组中的网卡连接到不同的交换机。而且在连接不同交换机时采用的是主备模式，只有在连接在同一交换机时才可以实现负载均衡聚。</p></li><li><p>交换机依赖模式<br>这种模式需要交换机参与网络聚合，并且要求所有网络聚合组网卡连接到同一个物理交换机或者以级联多交换机方式实现的对外显示为单一物理交换机的方式；根据交换机支持的模式可以有两种模式选择：</p></li></ol><ul><li><p>通用的静态聚合模式即IEEE 802.3ad<br>这种模式需要在交换机上静态设置指定汇聚组中的网卡连接。由于这种方式需要静态指定，因此没有动态协商协议机制帮助交换机判断线缆连接的正确与否或是否有其他错误导致聚合失败。</p></li><li><p>动态聚合模式即IEEE 802.1ax或LACP（Link Aggregation Control Protocol 链路汇聚控制协议）<br>这种模式由于有了LACP协议的支持，可以动态的识别服务器和交换机的连接，进而实现动态地创建聚合组，添加和移除组成员等工作，现在多数交换机都支持LACP即802.1ax协议，不过也大多需要在服务器连接的交换机端口中手工启用此功能。</p></li></ul><p>通过图形方法配置，如果在Server 2012中启用了图形界面管理功能，可以利用服务器管理器简单的创建网络聚合。</p><p><a href="https://imgtu.com/i/oTp2OU"><img src="https://s1.ax1x.com/2021/12/11/oTp2OU.png" alt="oTp2OU.png"></a></p><p>当然，通过Powershell命令行是个很好的方式，先看看可以针对LBFO进行哪些操作：</p><p><a href="https://imgtu.com/i/oTphTJ"><img src="https://s1.ax1x.com/2021/12/11/oTphTJ.png" alt="oTphTJ.png"></a></p><p>创建一个网卡聚合组“NIC Teaming”，将所有本机物理网卡添加到这个组中，并且设置模式为交换机独立模式，负载均衡模式为默认哈希：</p><p><a href="https://imgtu.com/i/oTpof1"><img src="https://s1.ax1x.com/2021/12/11/oTpof1.png" alt="oTpof1.png"></a></p><p>看看创建之后的网络设备，是不是多了一个NIC Teaming网卡？</p><p><a href="https://imgtu.com/i/oTp7Sx"><img src="https://s1.ax1x.com/2021/12/11/oTp7Sx.png" alt="oTp7Sx.png"></a></p><p>当然，你也可以通过Powershell看到这个网络聚合网卡的状态：</p><p><a href="https://imgtu.com/i/oTpHl6"><img src="https://s1.ax1x.com/2021/12/11/oTpHl6.png" alt="oTpHl6.png"></a></p><p>本博客至此，你可能觉得还不过瘾啊，毕竟涉及类似负载均衡策略等很多方面都没涉及到，没关系；我在网上看到一个涉及网卡聚合方方面面的详尽文档，不敢独享这里分享给大家，感兴趣的别忘了收集哦：）</p><p><a href="http://www.microsoft.com/en-us/download/details.aspx?id=30160"> Windows Server 2012 NIC Teaming (LBFO) Deployment and Management</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    <category term="Windows" scheme="https://www.hnswxx.cn/categories/Windows/"/>
+    
+    
+    <category term="WindowServer2019" scheme="https://www.hnswxx.cn/tags/WindowServer2019/"/>
+    
+    <category term="nic" scheme="https://www.hnswxx.cn/tags/nic/"/>
+    
+  </entry>
   
   <entry>
     <title>centos8网关服务器（防火墙的nat转换）</title>
@@ -44,8 +70,8 @@
   
   <entry>
     <title>MariaDB 主从复制</title>
-    <link href="https://www.hnswxx.cn/2021/12/10/mariaDB-master-slave-replication/"/>
-    <id>https://www.hnswxx.cn/2021/12/10/mariaDB-master-slave-replication/</id>
+    <link href="https://www.hnswxx.cn/2021/12/10/mariadb-master-slave-replication/"/>
+    <id>https://www.hnswxx.cn/2021/12/10/mariadb-master-slave-replication/</id>
     <published>2021-12-10T00:44:38.000Z</published>
     <updated>2021-12-10T01:01:47.000Z</updated>
     
@@ -478,28 +504,6 @@
     <updated>2021-11-12T03:12:24.140Z</updated>
     
     <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>使用单用户模式有一个前提，就是系统引导器（GRUB）能正常工作，进入系统维护就要使用修复模 式，注意：进入单用户模式，没有开启网络服务，不支持远程连接。CentOs 系统中不同的运行级别（Run Leve）代表了系统中不同的运行状态。例如，Linux 服务器正常运行时处于运行级别 3，是能够提供网络 服务的多用户模式：而运行级别 1 只允许管理员通过服务器主机的单一控制台进行操作，即单用户模式。 下面以 GRUB 为例说明其进入方法。在 GRUB 启动菜单中有“E”和“C”操作按键，按 E 键，进入所示 的界面。<br><a href="https://imgtu.com/i/I0YJmT"><img src="https://z3.ax1x.com/2021/11/11/I0YJmT.png" alt="I0YJmT.png"></a><br>使用光标键找到“linux16”下面一行的 ro 符，把 ro 修改为“rw init=/sysroot/bin/sh”<br><a href="https://imgtu.com/i/I0YB11"><img src="https://z3.ax1x.com/2021/11/11/I0YB11.md.png" alt="I0YB11.md.png"></a><br><a href="https://imgtu.com/i/I0YD6x"><img src="https://z3.ax1x.com/2021/11/11/I0YD6x.md.png" alt="I0YD6x.md.png"></a><br>然后按“Ctrl+X”组合键进入单用户模式<br><a href="https://imgtu.com/i/I0Y60O"><img src="https://z3.ax1x.com/2021/11/11/I0Y60O.md.png" alt="I0Y60O.md.png"></a><br>chroot，即 change root directory （更改 root 目录） </p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">更改 root 目录为 sysroot：</span></span><br><span class="line">chroot</span><br><span class="line"><span class="meta">#</span><span class="bash">修改 root 密码：</span> </span><br><span class="line">passwd root</span><br><span class="line"><span class="meta">#</span><span class="bash">更新 SELinux 信息：</span> </span><br><span class="line">touch /.autorelabel</span><br><span class="line"><span class="meta">#</span><span class="bash">退出然后重新启动系统：</span></span><br><span class="line">exit </span><br><span class="line">reboot</span><br><span class="line"><span class="meta">#</span><span class="bash">要退出 chroot 环境，执行 <span class="built_in">exit</span> 退出，然后重启即可用新的 root 密码登录。</span></span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
-      
-    
-    
-    
-    <category term="Linux" scheme="https://www.hnswxx.cn/categories/Linux/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 相关概念</title>
-    <link href="https://www.hnswxx.cn/2021/11/11/linux-related-concepts/"/>
-    <id>https://www.hnswxx.cn/2021/11/11/linux-related-concepts/</id>
-    <published>2021-11-10T22:53:22.000Z</published>
-    <updated>2021-11-12T03:12:32.200Z</updated>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="Linux："><a href="#Linux：" class="headerlink" title="Linux："></a>Linux：</h3><p>Linux 是一套免费使用和自由传播的类 Unix 操作系统，是一个基于 POSIX 和 Unix 的多用户、多任务、支持多线程和多 CPU 的操作系统。它能运行主要的 Unix 工具软件、应用程序和网络协议。它支持 32 位和 64 位硬件。Linux 继承了 Unix 以网络为核心的设 计思想，是一个性能稳定的多用户网络操作系统。 </p><h3 id="Unix："><a href="#Unix：" class="headerlink" title="Unix："></a>Unix：</h3><p>Unix 是 20 世纪 70 年代初出现的一个操作系统，除了作为网络操作系统之外，还可以作为单机操作系统使用。Unix 作为一 种开发平台和台式操作系统获得了广泛使用，目前主要用于工程应用和科学计算等领域。 </p><h3 id="类-Unix："><a href="#类-Unix：" class="headerlink" title="类 Unix："></a>类 Unix：</h3><p>类 Unix 系统（英文：Unix-like）是指继承 UNIX 的设计风格演变出来的系统（比如 GNU/Linux、FreeBSD、OpenBSD、 SUN 公司的 Solaris、Minix、QNX 等），这些操作系统虽然有的是自由软件，有的是商业软件，但都相当程度地继承了原始 UNIX 的特 性，有许多相似处，并且都在一定程度上遵守 POSIX 规范，但是它们却并不含有 UNIX 的源代码。UNIX 的源代码为 SCO 公司所有，属 于商业软件，UNIX 的商标权和 UNIX 标准认定属于 OPENGROUP 所有。由于 UNIX 标准认定价格昂贵，所以唯一获得 UNIX 标准认定 的为苹果的 MACOS 系统。 </p><h3 id="操作系统-operating-system-OS-："><a href="#操作系统-operating-system-OS-：" class="headerlink" title="操作系统 operating system (OS)："></a>操作系统 operating system (OS)：</h3><p>操作系统是管理计算机硬件与软件资源的计算机程序，同时也是计算机系统的内核与基石。 操作系统需要处理如管理与配置内存、决定系统资源供需的优先次序、控制输入设备与输出设备、操作网络与管理文件系统等基本事务。 操作系统也提供一个让用户与系统交互的操作界面。 </p><h3 id="可移植操作系统接口（POSIX）："><a href="#可移植操作系统接口（POSIX）：" class="headerlink" title="可移植操作系统接口（POSIX）："></a>可移植操作系统接口（POSIX）：</h3><p>可移植操作系统接口（英语：Portable Operating System Interface，缩写为 POSIX）是 IEEE 为要在各种 UNIX 操作系统上运行软件，而定义 API 的一系列互相关联的标准的总称，其正式称呼为 IEEE Std 1003，而国际标准名 称为 ISO/IEC 9945。此标准源于一个大约开始于 1985 年的项目。POSIX 这个名称是由理查德·斯托曼（RMS）应 IEEE 的要求而提议的 一个易于记忆的名称。它基本上是 Portable Operating System Interface（可移植操作系统接口）的缩写，而 X 则表明其对 Unix API 的传承。</p><h3 id="多任务："><a href="#多任务：" class="headerlink" title="多任务："></a>多任务：</h3><p>多任务处理是指用户可以在同一时间内运行多个应用程序,每个应用程序被称作一个任务.Linux、windows 就是支持多任 务的操作系统,比起单任务系统它的功能增强了许多。 当多任务操作系统使用某种任务调度策略允许两个或更多进程并发共享一个处理器时，事实上处理器在某一时刻只会给一件任务提供 服务。因为任务调度机制保证不同任务之间的切换速度十分迅速，因此给人多个任务同时运行的错觉。多任务系统中有 3 个功能单位：任 务、进程和线程。 </p><h3 id="多线程："><a href="#多线程：" class="headerlink" title="多线程："></a>多线程：</h3><p>多线程（英语：multithreading），是指从软件或者硬件上实现多个线程并发执行的技术。具有多线程能力的计算机因有 硬件支持而能够在同一时间执行多于一个线程，进而提升整体处理性能。具有这种能力的系统包括对称多处理机、多核心处理器以及芯片 级多处理（Chip-level multithreading）或同时多线程（Simultaneous multithreading）处理器。在一个程序中，这些独立运行的程序 片段叫作“线程”（Thread），利用它编程的概念就叫作“多线程处理（Multithreading）”。 </p><h3 id="中央处理器（CPU-central-processing-unit）："><a href="#中央处理器（CPU-central-processing-unit）：" class="headerlink" title="中央处理器（CPU central processing unit）："></a>中央处理器（CPU central processing unit）：</h3><p>中央处理器（CPU，central processing unit）作为计算机系统的运算和控 制核心，是信息处理、程序运行的最终执行单元。CPU 自产生以来，在逻辑结构、运行效率以及功能外延上取得了巨大发展。 </p><h3 id="操作系统-32-位和-64-位有什么区别："><a href="#操作系统-32-位和-64-位有什么区别：" class="headerlink" title="操作系统 32 位和 64 位有什么区别："></a>操作系统 32 位和 64 位有什么区别：</h3><ol><li>支持的内存不同 32 位的操作系统，最多支持 4G 的内存，实际内存为 3.25G；64 位系统支持 4G 8G 16G 32G 64G 128G 256G 内存， 理论上可以无限支持，只要你主板上有足够的内存条。 </li><li>支持的处理器不同 64 位的操作系统支持基于 64 位的处理器，而 32 位的系统却不能完全支持 64 位的处理器。 </li><li>支持的软件不同 32 位的操作系统，支持基于 32 位的软件，不能运行 64 位的软件；而 64 位的系统一般这两种类型的都支持，基本 上与各种软件都兼容，特别是 adobe 公司的软件，现在的新版本的都只支持 64 位。 </li><li>处理数据的能力 32 和 64 表示 CPU 可以处理最大位数，一次性的运算量不一样，理论上 64 位的会比 32 位快 1 倍，内存寻址也不一 样。</li><li>系统体积大小 64 位系统都比 32 位系统大的多,比如 win7 64 位比 win7 32 位系统大 700M 左右。<br>通常来讲，计算机硬件是由运算器、控制器、存储器、输入/输出设备等共同组成的，而让各种硬件设备各司其职且又能协同运行的 东西就是系统内核。Linux 系统的内核负责完成对硬件资源的分配、调度等管理任务。由此可见，系统内核对计算机的正常运行来讲是太 重要了，因此一般不建议直接去编辑内核中的参数，而是让用户通过基于系统调用接口开发出的程序或服务来管理计算机，以满足日常工 作的需要，如图所示。<br><a href="https://imgtu.com/i/I08qAJ"><img src="https://z3.ax1x.com/2021/11/11/I08qAJ.png" alt="I08qAJ.png"></a><h3 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h3>就是这样的一个命令行工具。Shell（也称为终端或壳）充当的是人与内核（硬件）之间的翻译官，用户把一些命令“告诉” 终端，它就会调用相应的程序服务去完成某些工作。现在包括红帽系统在内的许多主流 Linux 系统默认使用的终端是 Bash （Bourne-Again SHell）解释器。主流 Linux 系统选择 Bash 解释器作为命令行终端主要有以下 4 项优势，读者可以在今后的学习和 生产工作中细细体会 Linux 系统命令行的美妙之处，真正从心里爱上它们。 </li></ol><ul><li>通过上下方向键来调取过往执行过的 Linux 命令； </li><li>命令或参数仅需输入前几位就可以用 Tab 键补全； </li><li>具有强大的批处理脚本； </li><li>具有实用的环境变量功能。</li></ul>]]></content>
     
     
       
