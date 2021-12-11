@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.hnswxx.cn/2021/11/23/dns-forward-and-reverse-resolution/</loc>
+    <lastmod>2021-12-11</lastmod>
+  </url>
+  <url>
     <loc>https://www.hnswxx.cn/2021/12/11/nic-teaming/</loc>
     <lastmod>2021-12-11</lastmod>
   </url>
@@ -19,10 +23,6 @@
   <url>
     <loc>https://www.hnswxx.cn/2021/11/24/linux-dns-secondary-server/</loc>
     <lastmod>2021-12-09</lastmod>
-  </url>
-  <url>
-    <loc>https://www.hnswxx.cn/2021/11/23/dns-forward-and-reverse-resolution/</loc>
-    <lastmod>2021-11-24</lastmod>
   </url>
   <url>
     <loc>https://www.hnswxx.cn/2021/11/18/problems-of-windows-server/</loc>
