@@ -1,0 +1,601 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>邮件服务器 Postfix | 河南省商务中等职业学校</title><meta name="keywords" content="鸟哥的Linux私房菜,postfix,邮件"><meta name="author" content="网络搭建竞赛组"><meta name="copyright" content="网络搭建竞赛组"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="​        在这个邮件服务器的架设中，我们首先谈论 Mail 与 DNS 的重要相关性，然后依序介绍 Mail Server 的相关名词，以及 Mail Server 的运作基本流程与协议，也会谈到相关的 Relay 与邮件认证机制等项目， 这些项目对于未来邮件服务器的管理与设定是重要的，请不要忽略了这方面问题的讨论喔。 由于 Postfix 的配置文件内容较具有亲和性，因此我们单纯介绍了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="邮件服务器 Postfix">
+<meta property="og:url" content="https://www.hnswxx.cn/2021/11/13/mail-server-postfix/index.html">
+<meta property="og:site_name" content="河南省商务中等职业学校">
+<meta property="og:description" content="​        在这个邮件服务器的架设中，我们首先谈论 Mail 与 DNS 的重要相关性，然后依序介绍 Mail Server 的相关名词，以及 Mail Server 的运作基本流程与协议，也会谈到相关的 Relay 与邮件认证机制等项目， 这些项目对于未来邮件服务器的管理与设定是重要的，请不要忽略了这方面问题的讨论喔。 由于 Postfix 的配置文件内容较具有亲和性，因此我们单纯介绍了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/11/13/IyRoJe.png">
+<meta property="article:published_time" content="2021-11-13T00:49:16.000Z">
+<meta property="article:modified_time" content="2021-11-22T02:03:35.087Z">
+<meta property="article:author" content="网络搭建竞赛组">
+<meta property="article:tag" content="鸟哥的Linux私房菜">
+<meta property="article:tag" content="postfix">
+<meta property="article:tag" content="邮件">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/11/13/IyRoJe.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://www.hnswxx.cn/2021/11/13/mail-server-postfix/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//s4.cnzz.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?40bf17b5c158004f1b79add895b85851";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script async="async" data-pjax="data-pjax" src="https://s4.cnzz.com/z_stat.php?id=1280585001&amp;web_id=1280585001"></script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '邮件服务器 Postfix',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-11-22 10:03:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/icon.css" media="defer" onload="this.media='all'"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="河南省商务中等职业学校" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://z3.ax1x.com/2021/11/13/IybhP1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://720yun.com/t/74vkshrmriy?scene_id=50147975"><i class="fa-fw fas fa-video"></i><span> 学校VR</span></a></div><div class="menus_item"><a class="site-page" href="/movies/"><i class="fa-fw fa fa-heart"></i><span> 电影</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://z3.ax1x.com/2021/11/13/IyRoJe.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">河南省商务中等职业学校</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 档案</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://720yun.com/t/74vkshrmriy?scene_id=50147975"><i class="fa-fw fas fa-video"></i><span> 学校VR</span></a></div><div class="menus_item"><a class="site-page" href="/movies/"><i class="fa-fw fa fa-heart"></i><span> 电影</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">邮件服务器 Postfix</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-11-13T00:49:16.000Z" title="发表于 2021-11-13 08:49:16">2021-11-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-22T02:03:35.087Z" title="更新于 2021-11-22 10:03:35">2021-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Linux/">Linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="邮件服务器 Postfix"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>​        在这个邮件服务器的架设中，我们首先谈论 Mail 与 DNS 的重要相关性，然后依序介绍 Mail Server 的相关名词，以及 Mail Server 的运作基本流程与协议，也会谈到相关的 Relay 与邮件认证机制等项目， 这些项目对于未来邮件服务器的管理与设定是重要的，请不要忽略了这方面问题的讨论喔。 由于 Postfix 的配置文件内容较具有亲和性，因此我们单纯介绍了 Postfix 不再介绍 sendmail 了。</p>
+<h4 id="邮件服务器的功能与运作原理"><a href="#邮件服务器的功能与运作原理" class="headerlink" title="邮件服务器的功能与运作原理"></a>邮件服务器的功能与运作原理</h4><p>​        电子邮件是个啥玩意儿？它是利用网络传递一些信息给远程服务器的一种信息传递行为，虽然消息正文是很冷很硬的计算机文字， 确实比不上手写信件来的让人觉得温暖，不过，对于具有时效性的信息来说，电子邮件可是个不可多得的好帮手！ 但是，电子邮件系统蓬勃发展的现在却被某些少部分的特定人士所乱用，导致垃圾信件、色情广告信件等等的泛滥！真是啊～伤脑筋～底下我们就先来谈一谈这个电子邮件相关的功能吧！</p>
+<p><strong>Tips</strong>:</p>
+<p>​        时至今日，Google 与几个大型的网络公司都有提供免费或者是付费的邮件服务器，其中，免费的电子邮件账号甚至已经提供高达数个 GB 的邮件储存量！对于一般用户来说真是非常够用了！因此，除非必要，现在我们都『不建议您架设 mail server』的！ 因为玩过邮件主机的朋友都很清楚，在现在的环境当中想要搞定 Mail server 是很难的一件事情， 除了目前网络社会的广告信、垃圾信、病毒信实在是多的不象话，所以各主要的 ISP 对于邮件控管上面越来越严格， 而且基本功当中的 mail vs. DNS 相关性又太高！很难理解～</p>
+<h5 id="电子邮件的功能与问题"><a href="#电子邮件的功能与问题" class="headerlink" title="电子邮件的功能与问题"></a>电子邮件的功能与问题</h5><p>​        在目前的社会当中，没有电子邮件 (e-mail) 似乎是蛮奇怪的一件事！可以说，现在 e-mail 已经成为一个很普遍的人与人之间的沟通管道了， 电子邮件可以很快速的帮你将文件或讯息传送到地球上的任何一个有网络存在的角落，当然，你也可以在任何有网络的地方，连上 Internet去收取你的信件！ 不过，遗憾的是，只要是有人类的地方，就会有很多你意想不到的事情会出现了， 当然 e-mail 也不例外，怎么说呢？ 我们来慢慢的分析一下电子邮件产生的一些问题吧： </p>
+<h6 id="夹带病毒的电子邮件问题："><a href="#夹带病毒的电子邮件问题：" class="headerlink" title="夹带病毒的电子邮件问题："></a>夹带病毒的电子邮件问题：</h6><p>​        你可以常常听到电子邮件可能夹带病毒对吧！没错，利用电子邮件以及人们对于电子邮件的漫不经心的态度， 使得以电子邮件为媒介的计算机病毒更容易『深入人群』当中吶！ </p>
+<h6 id="怪客透过邮件程序入侵："><a href="#怪客透过邮件程序入侵：" class="headerlink" title="怪客透过邮件程序入侵："></a>怪客透过邮件程序入侵：</h6><p>​        只要在 Internet 上面跑的数据就没有绝对保密的！你可以轻易的使用怪客软件 (Cracker) 就可以取得使用者在利用 e-mail 传送过程当中所输入的账号与密码，若经过分析之后，还可能破解对方的邮件主机～哇！真是乱可怕一把的！</p>
+<h6 id="广告信与垃圾信等："><a href="#广告信与垃圾信等：" class="headerlink" title="广告信与垃圾信等："></a>广告信与垃圾信等：</h6><p>​        这个可说是目前各大 ISP 心中永远的痛～这些垃圾信件可以占掉很多那少的可怜的带宽， 使得正常用户连接速度与质量下降，更可能造成网络的停顿～当然， 常常收到垃圾信件的你，大概也不好过吧！</p>
+<h6 id="主机被大量不明信件塞爆："><a href="#主机被大量不明信件塞爆：" class="headerlink" title="主机被大量不明信件塞爆："></a>主机被大量不明信件塞爆：</h6><p>​        万一你没有将邮件服务器设定好，嘿嘿！送信者可以藉由你主机收信的功能，发送大量的信件， 让你『一次收个够！』灌爆你的服务器硬盘，想要不宕机都很难～</p>
+<h6 id="真实社会的讨厌情事："><a href="#真实社会的讨厌情事：" class="headerlink" title="真实社会的讨厌情事："></a>真实社会的讨厌情事：</h6><p>​        『匿名信函』！听到会不会很害怕？当然很害怕啦！偏偏使用 e-mail 就可以作很多的坏事～这真是太不道德了～</p>
+<h6 id="不实的信件内容："><a href="#不实的信件内容：" class="headerlink" title="不实的信件内容："></a>不实的信件内容：</h6><p>​        只要注意到消基会的讯息就可以知道啦，不明来源的电子邮件说的内容，不要轻易的相信！ 因为很多可是以讹传讹，结果，大家都被耍了的～例如，你的朋友收到一封信，认为『哇！这是大事情』， 所以在没有求证的情况下，将信『转寄』给你看，嘿！你的朋友寄给你的，当然要相信他啦！ 立刻再转寄，如此一再地循环，嘿嘿！这个错误内容的讯息马上就让大家知道， 更可怕的是『还会让大家接受～』所以，看到任何讯息时，请千万要记得求证一下吶！</p>
+<p>​        可怕吧！电子邮件会衍生出这么多的问题说～另外，这个 email 服务器的设定与管理真的是网管人员心中永远的痛！ 为什么呢？因为人都是想要越便利越简单越好， 但越便利越不管制的邮件服务器就越容易被攻击或遭利用！ 反过来说，如果你针对邮 件服务器管得太严厉，那就不太人性化，相信至少您的主管可能就不太满意，怎么办？ 呵呵！没错啦！邮件服务器就是这么回事，让人又爱又怕的一个玩意儿，搞定他， 恭喜您啊一切顺利圆满！ 搞不定他，服务器被当成垃圾信件转运站事小，丢掉工作那 可是『兹事体大』呦！就因为他是这么重要又难以搞定， 所以我们可得好好的学学他吶！</p>
+<h5 id="Mail-server-与-DNS-之间的关系"><a href="#Mail-server-与-DNS-之间的关系" class="headerlink" title="Mail server 与 DNS 之间的关系"></a>Mail server 与 DNS 之间的关系</h5><p>​        既然要使用 e-mail ，当然就需要邮件服务器啰 (Mail Server)！不然你的信要怎样寄出去呢？事实上，mail server 的原理说难不难，但是说简单吗～似乎又有点难以理解～，所以，底下我们要来谈一谈他的原理部分，然后再针对服务器的设定来进行说明咯！我们首先要讲的就是『 Mail server 系统与 DNS 系统有什么关连性？』 这 个部分新手最容易被搞混哩，是否要架设 mail server 就『宿命』的一定得架设 DNS server 在你的主机上面吗？</p>
+<p>​        Mail server 与合法的主机名 事实上目前已经没有人会使用 IP 来寄信了，我们通常接收到的 email 都是使用 『账号@主机名』的方式来处理的， 所以说，你的邮件服务器『就一定要有一个合法注册过的主机名』才可以。为什么呢？ 因为网络恶意使用与垃圾邮件泛滥的种种因素， 导致我们不允许直接利用主机的 IP 来寄信了，否则每部有 IP 的主机都能寄信… 因此，你想要架设 mail server 就『必需』要有合法的主机名啰。</p>
+<p>​        OK！既然我只要一个合法的主机名即可，那么表示我不需要架设一部 DNS 主机啰？ 是的，你可以这样认为！只要你拥有合法的主机名，亦即在 DNS 的查询系统当中你的主机名拥有一个 A 的标志， 理论上你的 mail server 就可以架设成功。只不过由于目前因特网上面的广告信、 垃圾信与病毒信等占用了太多的带宽，导致整个网络社会花费过多的成本在消耗这些垃圾资料。 所以为了杜绝可恶的垃圾信件，目前的大型网络供货商 (ISP) 都会针对不明来源的邮件加以限制，这也就是说『想要架设一部简单 可以运作的 mail server 越来越难了』。</p>
+<p>​        DNS 的反解也很重要！ 对于一般的服务器来说，我们只要使用正解让客户端可以正确的找到我们服务器的 IP 即可架站，举例来说 WWW 服务器就是这样。不过，由于目前收信端的邮件服务器会针对邮件来源的 IP 进行反解，而如果你的网络环境是由拨接取得非固定的 IP 时，该 种 IP 在 ISP 方面通常会主动的以 xxx.dynamic.xxx 之类的主机名来管理，偏偏这样的主机名会被主要的大型邮件服务器 (例如 hotmail, yahoo 等) 视为垃圾信件， 所以你的邮件服务器所发出的信件将可能被丢弃，那可就伤脑筋了！ 所以啊，如果你想要架设一部 Mail server 的话，请『务必』向您的上层 ISP 申 请 IP 反解的对应， 不要再使用预设的反解主机名，否则很容易导致您的邮件服务器 所发出的信件会在 Internet 上面流浪啊！</p>
+<p><strong>Tips</strong>:</p>
+<p>​        其实你还是可以不用申请 IP 的反解，不过就得要利用所谓的 relayhost 或者是 smarthost 来处理邮件转递的问题， 这个部分又涉及到上层 ISP 的问题，挺复杂！我们会在后续作说明！</p>
+<p><strong>需要 DNS 的 MX 及 A 标志啊 (超重要的 MX)！</strong></p>
+<p>​        那么我们的邮件服务器系统到底是如何使用 DNS 的信息来进行邮件的传递的？还 记得在 DNS 里面谈到的 MX 这个标志吗？当时我们仅说过这个 MX 代表的是 Mail exchanger， 当一封邮件要传送出去时，邮件主机会先分析那封信的『目标主机 的 DNS 』，先取得 MX 标志 (注意，MX 标志可能会有多部主机喔) 然后以最优先 MX 主 机为准将信发送出去。看不懂吗？没关系，我们以底下这个 DNS 范例来说：</p>
+<p>xyz.com.vbird IN MX 10 mail.xyz.com.vbird </p>
+<p>xyz.com.vbird IN MX 20 mail2.xyz.com.vbird </p>
+<p>xyz.com.vbird IN A aaa.bbb.ccc.ddd</p>
+<p>假如上述的 DNS 设定是正常的，那么： </p>
+<p>​        当有一封信要传给 <a href="mailto:&#117;&#115;&#x65;&#x72;&#64;&#120;&#x79;&#x7a;&#46;&#x63;&#111;&#109;&#x2e;&#118;&#98;&#x69;&#114;&#x64;">&#117;&#115;&#x65;&#x72;&#64;&#120;&#x79;&#x7a;&#46;&#x63;&#111;&#109;&#x2e;&#118;&#98;&#x69;&#114;&#x64;</a> 时，由于 MX 标志最低者优先，所以该封信会先传送到 mail.xyz.com.vbird 那部主机。</p>
+<p>​        如果 mail.xyz.com.vbird 由于种种原因，导致无法收下该封信时，该封信将以次要 MX 主机来传送，那就是传送到 mail2.xyz.com.vbird 那部主机上头；</p>
+<p>​        如果两部 MX 主机都无法负责的话，那么该封信会直接以 A 的标志，亦即直接传送到 aaa.bbb.ccc.ddd 那个 IP 上头去， 也就是 xyz.com.vbird 本身 啦！</p>
+<p>​        在这个过程当中，你必需要注意到：mail.xyz.com.vbird 及 mail2.xyz.com.vbird 必需要是可以帮 xyz.com.vbird 转信的主机才行，也就是说，那两部主机通常是你公司的最上游的邮件主机， 并不是你随意填写的！那两部主机还需要针对你的 xyz.com.vbird 来设定『邮件转递』才行！否则你的信会被踢掉的。</p>
+<p>​        由于现在的很多邮件服务器会去搜寻 MX 这个标志来判断目标邮件服务器是否为合法，所以你要架设 Mail server 虽然不必自行设定 DNS 服务器，不过你最好要申请 一个 MX 的标志才行。此外，MX 标志一定要设定正确，否则你的信件将可能会直接被 MX服务器踢掉。为了要设定 MX 但是我们没有上层邮件服务器时，所以你可以指定 MX 为 自己，利用自己当 MX 服务器即可。</p>
+<p>​        那么你或许会想，这个 MX 有啥好处啊？一般来说，如果目标主机挂点时，你的邮件通常会直接退还给原发信者， 但如果有 MX 主机时，这部 MX 主机会先将该封信放 在他的队列 (queue) 当中，等到你的目标主机重新提供邮件服务后， MX 主机会将你 的信件传送给目标主机，如此一来你的信件就比较不会遗失啊！这样说，您可以了解吧！ ^_^</p>
+<p><strong>Email 的地址写法</strong></p>
+<p>​        刚刚上头说过 email 通常是『账号@主机名』的方式来处理，举例来说鸟哥的 <a target="_blank" rel="noopener" href="http://www.centos.vbird/">www.centos.vbird</a> 主机上面有个 dmtsai 的使用者，则我的 email 将会成为： 『<a href="mailto:&#100;&#x6d;&#x74;&#x73;&#97;&#x69;&#64;&#x77;&#x77;&#119;&#46;&#99;&#x65;&#x6e;&#x74;&#111;&#x73;&#x2e;&#118;&#98;&#x69;&#114;&#x64;">&#100;&#x6d;&#x74;&#x73;&#97;&#x69;&#64;&#x77;&#x77;&#119;&#46;&#99;&#x65;&#x6e;&#x74;&#111;&#x73;&#x2e;&#118;&#98;&#x69;&#114;&#x64;</a>』，当有人要寄信给我时， 他会分析 @ 后面的主机名， 亦即 <a target="_blank" rel="noopener" href="http://www.centos.vbird/">www.centos.vbird</a> 的 MX/A 标志等等，然后再透过刚刚说明的流程来传出信件。</p>
+<p>而当我的 <a target="_blank" rel="noopener" href="http://www.centos.vbird/">www.centos.vbird</a>. 收到这封信时，他会将信放到 dmtsai 的信箱当中啦！ 底下我们就来谈一谈这个流程吧！</p>
+<h5 id="邮件传输所需要的组件-MTA-MUA-MDA-以及相关协议"><a href="#邮件传输所需要的组件-MTA-MUA-MDA-以及相关协议" class="headerlink" title="邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议"></a>邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议</h5><h6 id="邮件传输所需要的组件-MTA-MUA-MDA-以及相关协议-1"><a href="#邮件传输所需要的组件-MTA-MUA-MDA-以及相关协议-1" class="headerlink" title="邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议"></a>邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议</h6><p>在开始介绍邮件的传送过程之前，我们先来想一想，你是如何寄出电子邮件的？假设你要寄信给一个用户， 他的电子邮件是『<a href="mailto:&#97;&#x5f;&#x75;&#x73;&#x65;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#97;&#x5f;&#x75;&#x73;&#x65;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a>』好了，也就是说，你要寄一封信到 gmail.com 这个主机上的意思。 那你的桌面计算机 (举例来说， Windows 系统) 是否能够将这封信『直接』透过网络送给 gmail.com 那个主机上？ 当然不行啦！你得要设定帮你转信的邮件服务器才行！也就是说，你必需要先向某一部邮件服务器注册， 以取得一个合法的电子邮件权限后，才能够发送邮件出去的。 所以说，你要寄出一封信件时是需要很多接口的帮忙的，底下列出一个简单的图示来说明</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/Iy57r9"><img src="https://z3.ax1x.com/2021/11/13/Iy57r9.png" alt="Iy57r9.png"></a></p>
+<p>电子邮件的『传送』过程示意图</p>
+<p>我们先来解释一些专有名词吧！然后再来说明传送的流程：</p>
+<ul>
+<li>MUA (Mail User Agent)：</li>
+</ul>
+<p>顾名思义 MUA 就是『邮件使用者代理人』的意思，因为除非你可以直接利用类似 telnet 之类的软件登入邮件服务器来主动发出信件，否则您就得要透过 MUA 来帮你送信到邮件服务器上头去。 最常见的 MUA 像是 Mozilla 推出的 Thunderbird (雷鸟) 自由软件， 或者是 Linux 桌面 KDE 常见的 Kmail ，及 Windows 内件的 Outlook Express (OE) 等。 MUA 主要的功能就是收受邮件主 机的电子邮件，以及提供用户浏览与编写邮件的功能！</p>
+<ul>
+<li>MTA (Mail Transfer Agent)：</li>
+</ul>
+<p>MUA 帮用户传送邮件到邮件主机上，那这部邮件主机如果能够帮用户将这封信寄出去，那他就是一部邮件传送主机 (MTA) 啦！这个MTA 就是『邮件传送代理人』的意思。也来顾名思义一下，既然是『传送代理人』，那么使用者寄出的信， 帮用户将属于该用户的信件收下时，就是找它 (MTA) 就对啦！基本上，MTA 的功能有这些：</p>
+<ol>
+<li><p>收受信件：</p>
+<p>使用简单邮件传送协议(SMTP) MTA 主机最主要的功能就是：将来自客户端或者是其他 MTA 的来信收下来，这个时候 MTA 使用的是 Simple Mail Transfer Protocol (SMTP)， 他使用的是 port 25 啦！</p>
+</li>
+<li><p>转递信件：</p>
+<p>如果该封信件的目的地并不是本身的用户，且该封信的相关数据符合使用 MTA 的权力， 那么咱们的 MTA 就会将该封信再传送到下一部主机上。这即是所谓的转递 (Relay) 的功能。 总之，我们一般提到的 Mail Server 就是 MTA 啦！而严格来说， MTA 其实仅是指 SMTP 这个协议而已。而达成 MTA 的 SMTP 功能的主要软件包括老牌 的 sendmail，后起之秀的 postfix，还有 qmail 等等。底下我们来看看，那么在 MTA 上头还有哪些重要的功能。</p>
+</li>
+</ol>
+<ul>
+<li>MDA (Mail Delivery Agent)：</li>
+</ul>
+<p>字面上的意思是『邮件递送代理人』的意思。事实上，这个 MDA 是挂在 MTA 底下的一个小程序， 最主要的功能就是：分析由 MTA 所收到的信件表头或内容等数据， 来决定这封邮件的去向。所以说，上面提到的 MTA 的信件转递功能，其实是由 MDA 达成的。 举例来说，如果 MTA 所收到的这封信目标是自己，那么 MDA 会将这封信给他转到使用者的信箱 (Mailbox) 去， 如果不是呢？那就准备要转递出去了。此外，MDA 还有分析与过滤邮件的功能喔！举例来说：</p>
+<ol>
+<li><p>过滤垃圾信件：</p>
+<p>可以根据该封邮件的表头资料，或者是特定的信件内容来加以分析过滤。 例如某个广告信的主题都是固定的， 如『AV 情色…』等等，那就可以透过 MDA 来过滤并去除该邮件。</p>
+</li>
+<li><p>自动回复：</p>
+<p>如果您出差了导致某一段时间内无法立即回信时，就可以透过 MDA 的功能让邮件主机可以自动发出回复信件， 如此您的朋友就不会认为你太大牌！^_^</p>
+</li>
+</ol>
+<p>各主要的 MTA 程序 (sendmail,postfix…) 都有自己的 MDA 功能，不过有些外挂的程序功能更强大，举例来说 procmail 就是一个过滤的好帮手，另外 Mailscanner + Spamassassion 也是可以使用的一些 MDA 喔。</p>
+<ul>
+<li> Mailbox：</li>
+</ul>
+<p>就是电子邮件信箱嘛！简单的说，就是某个账号专用的信件收受档案啰。我们的 Linux 系统默认的信箱都是放在 /var/spool/mail/使用者账号中！ 若 MTA 所收到的信件是本机的使用者，MDA 就会将信件送到该 mailbox 当中去啰！ 好了，那么来想一想，你如何透过 MUA 来将信件送到对方的邮件信箱 (Mailbox)去呢？</p>
+<ol>
+<li><p>取得某部 MTA 的权限： 我们本地端的 MUA 想要使用 MTA 来传出信件时， 当然需要取得 MTA 的权限。通常就是说：我们必须要向 MTA 注册一组可使用 email 的账号与密码才行。</p>
+</li>
+<li><p>使用者在 MUA 上编写信件后，传送至 MTA 上头： 用户在 MUA 上面编写信件，信件的数据主要有： </p>
+<ul>
+<li>信件标头：包括发件人与收件者的 email 地址，还有该封信件的主旨 (subject) 等；</li>
+<li>信件内容：就是你要跟对方说明的内容啦！</li>
+</ul>
+</li>
+</ol>
+<p>编写完毕之后只要按下传送钮，该封信就会送至你的 MTA 服务器上面了，注意： 是你的 MTA 而不是对方的 MTA ！ 如果你确定可以使用该部 MTA，那么你的这封信就会被放置到 MTA 的队列 (queue) 当中并等待传送出去了。</p>
+<ol start="3">
+<li><p>如果该封信的目标是本地端 MTA 自己的账号：</p>
+<p>你是可以寄信给你自己的，所以如果你的 MTA 收到该封信件的目标是自己的用户时，那就会透过 MDA 将这封信送到 Mailbox 去啰！</p>
+</li>
+<li><p>如果该封信目的为其他 MTA ，则开始转递 (Relay) 的流程：</p>
+<p>那如果这封信的目标是其他的主机呢？这个时候我们的 MTA 就会开始分析该封信是否具有合法的权限， 若具有权限时，则我们的 MDA 会开始进行邮件转递，亦即该封信件会透过我们的 MTA 向下一部 MTA 的 smtp (port 25) 发送出去。 如果该封信件顺利的发送出去了，那么该封信件就会由队列当中移除掉了。</p>
+</li>
+<li><p>对方 MTA 服务器收受信件</p>
+</li>
+</ol>
+<p>如果一切都没有问题的话，远程的 MTA 会收到我们 MTA 所发出的那封信，并将该信件放置到正确的使用者信箱当中， 等待使用者登入来读取或下载。 在这整个过程当中，你会发现你的信件是由我们的 MTA 帮忙发送出去的，此时 MTA 提供的协议是简单邮件传输协议 (Simple Mail Transfer Protocol, smtp)， 并且该封信最终是停留在对方主机的 MTA 上头！并不是你朋友的 MUA 上头啊！</p>
+<p><strong>Tips</strong>:</p>
+<p>为何特别强调这一点？因为以前有个朋有跟我说：『鸟哥啊，你要 寄 email 给我的时候记得跟我讲， 那我下班前将计算机开着，以免你信寄不到我的信箱』，此时额头三条线突然跑出来～很不好意 思～ 所以这里才要特别强调，你的 MUA 不必开着啦！要收信时再打开即可。 了解了传送信件时 MTA 需要启动 smtp (port 25) 之后，再来我们得要谈谈那这封信件对方要如何接收啊？</p>
+<h5 id="使用者收信时服务器端所提供的相关协议：-MRA"><a href="#使用者收信时服务器端所提供的相关协议：-MRA" class="headerlink" title="使用者收信时服务器端所提供的相关协议： MRA"></a>使用者收信时服务器端所提供的相关协议： MRA</h5><p>​        那使用者如果想要收信时，当然也可以透过 MUA 直接来联机取得自己的邮件信箱内的数据啊！整个过程有点像底下这样：</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/Iy7wZj"><img src="https://z3.ax1x.com/2021/11/13/Iy7wZj.png" alt="Iy7wZj.png"></a></p>
+<p>客户端透过 MRA 收回信件的流程示意图</p>
+<p>在上述的图示中，多了一个邮件组件，那就是 MRA：</p>
+<ul>
+<li>MRA (Mail Retrieval Agent)：</li>
+</ul>
+<p>使用者可以透过 MRA 服务器提供的邮政服务协议 (Post Office Protocol, POP) 来收下自己的信件， 也可以透过 IMAP (Internet Message Access Protocol) 协议将自己的信件保留在邮件主机上面， 并进一步建立邮件数据匣等进阶工作。 也就是说，当客户端收受信件时，使用的是 MRA 的 POP3, IMAP 等通讯协议， 并非 MTA 的 SMTP 喔！ 我们先谈一谈 POP3 的收信方式吧：</p>
+<ol>
+<li><p>MUA 透过 POP3 (Post Office Protocol version 3) 的协议连接到 MRA 的 port 110， 并且输入账号与密码来取得正确的认证与授权；</p>
+</li>
+<li><p>MRA 确认该用户账号/密码没有问题后，会前往该使用者的 Mailbox (/var/spool/mail/使用者账号) 取得使用者的信件并传送给用户的 MUA 软件 上；</p>
+</li>
+<li><p>当所有的信件传送完毕后，用户的 mailbox 内的数据将会被删除！ 在上述的流程当中我们知道 MRA 必须要启动 POP3 这个协议才行，不过这个协议的收件方式比较有趣， 因为使用者收信是由第一封信件开始收下直到最后一封信件传输完毕为止。不过由于某些 MUA 程序撰写的问题，若有些邮件有病毒的可能性时，透 过防病毒软件将可能导致该 MUA 软件的断线！ 如此一来由于传输没有完毕，因此 MRA 主机并不会将用户的信件删除。 此时如果使用者又再一次的按下接收按键，呵呵！原 来已接收的信件又会重复收到，而没有收到的还是收不到！</p>
+<p>这个时候或许你可以透过登入主机利用 mail 这个指令来处理你有问题的邮件， 或许换一种 MUA 也是个不错的思考方向，又或者暂时将防病毒软件关掉也是可以考虑的手段之一。 转头过来想一想，因为 POP3 的协议预设会将信件删除，那如果我今天在办公室将我的信收到办公室的计算机中， 当我回家时再度启动 MUA 时，是否能够收到已经被接收的信件？当然不行，对吧！</p>
+<p>或许你需要更有帮助的协议，亦即 IMAP (Internet Messages Access Protocol) ， 这个协议可以让你将 mailbox 的数据转存到你主机上的家目录，亦即 /home/账号/ 那 个目录下， 那你不但可以建立邮件数据匣，也可以针对信件分类管理，而且在任何一 个可连上网络的地方你只要登入主机， 原本的信件就还是存在吶！真是好啊！ 不过，使用 IMAP 时，用户的目录最好能够加点限制，例如利用 quota 来管理用户的硬盘权限， 否则因为信件都在主机上头，如果用户过多且误用时，你的硬盘空间会被吃光光喔！注意注意！</p>
+</li>
+</ol>
+<p>OK！透过上面的说明你要知道，要架设一部可以使用 MUA 进行收发信件的 MTA, MRA 服务器，你至少也需要启动 SMTP 以及 POP3 这两个协议才行！而这两个协议的启动程序并不相同， 所以架设上还是得要小心注意啊！</p>
+<p>​        pop3s, imap2 与 SMTP 的困扰 邮件数据在因特网上面传输时，透过的 SMTP, POP3, IMAP 等通讯协议，通通是明码传输的！尤其 POP3, IMAP 这两个通讯协议中，使用者必须要输入账号/密码才能收受信件！因为涉及帐密，所以当然加密这两个通讯协议的数据较佳！ 于是就有了 POP3s, IMAPs 通讯协议出现了！透过 SSL 加密嘛！那你会问，既然已经有 pop3s, imaps 了， 那有没有 smtps 呢？答案是，当然有！只不过没人用！</p>
+<p>​        从面两张图的流程来看，POP3, IMAP 只与 MRA 及自己的用户有关， 因此你只要跟你的用户说，你服务器使用的 MRA 协议为何，通知你的用户改变即可， 并不会影响到其他的服务器。 但是 MTA 就不同了！因为 MTA 必须与其他的 MTA 沟 通，</p>
+<p>​        因此，若你使用了 smtps ，那么全世界与你的 MTA 沟通者， 通通需要改变为 smtps 通讯协议才行！这个工程实在太浩大了！目前还没有任何一家 ISP 有能力进行！ 所以， 就造成目前没有 SMTPs 的协议啰。</p>
+<p>​        那么难道你的数据就一定要是明码吗？那倒不见得～既然你的 MTA 无法加密，那么你就自己将邮件数据加密后，再交由 MTA 传送即可！这也是目前很多急需加密数据 的邮件用户所使用的手段啦！^_^</p>
+<h5 id="Relay-与认证机制的重要性"><a href="#Relay-与认证机制的重要性" class="headerlink" title="Relay 与认证机制的重要性"></a>Relay 与认证机制的重要性</h5><p>​        当你需要 MTA 帮你将信寄送到下一部 MTA 去时，这个动作就称为邮件转递 (Relay) 啰，那就是电子邮件的『传送』过程示意图 当中的 Step 2.2 那个动作啦。那么我们来想一想，如 果『所有的人都可以藉由这一部 MTA 帮忙进行 Relay 时， 这个情况称之为 Open Relay 的动作』。当你的 MTA 发生 Open Relay 时，会有什么问题？ 问题可就大了！ 当你的 MTA 由于设定不良的关系导致具有 Open Relay 的状况，加上你的 MTA 确 实是连上因特网时， 由于因特网上面用 port scan 软件的闲人太多，你的 MTA 具有 Open Relay 的功能这件事情， 将会在短时间内就被很多人察觉，此时那些不法的广告信、色情垃圾信业者将会利用你的这部 Open Relay MTA 发送他们的广告，所以你会发生的问题至少有：</p>
+<ul>
+<li><p>你主机所在的网域正常使用的连接速度将会变慢，因为网络带宽都被广告、 垃圾信吃光了；</p>
+</li>
+<li><p>你的主机可能由于大量发送信件导致主机资源被耗尽，容易产生不明原因当机之类的问题；</p>
+</li>
+<li><p>你的 MTA 将会被因特网社会定义为『黑名单』，从此很多正常的邮件就会无法收发；</p>
+</li>
+<li><p>你 MTA 所在的这个 IP 将会被上层 ISP 所封锁，直到你解决这个 Open Relay 的问题为止；</p>
+</li>
+<li><p>某些用户将会对你的能力产生质疑，对您公司或者是你个人将会有信心障碍！ 甚至可能流失客源；</p>
+</li>
+<li><p>如果你的 MTA 被利用来发黑函，你是找不到原发信者的，所以你这部 MTA 将会被追踪为最终站！</p>
+</li>
+</ul>
+<p>问题很大呦！所以啊，目前所有的 distributions 都一样，几乎都将 MTA 预设启动为仅监听内部循环接口 (lo) 而已，而且也将 Open Relay 的功能取消了。既然取消 Open Relay 的功能，那么怎么使用这部 MTA 的 Relay 来帮忙转信啊？呵呵！所以我们在上头才会一直说，你『必需』取得合法使用该 MTA 的权限啊！ 这也就是说，设定 谁可以使用 Relay 的功能就是我们管理员的任务啦！通常设定 Relay 的方法有这几种：</p>
+<ul>
+<li><p>规定某一个特定客户端的 IP 或网段，例如规定内部 LAN 的 192.168.1.0/24 可使用 Relay；</p>
+</li>
+<li><p>若客户端的 IP 不固定时 (例如拨接取得的非固定 IP) 可以利用认证机制来处理。</p>
+</li>
+<li><p>将 MUA 架设在 MTA 上面，例如 OpenWebMail 之类的 web 接口的 MUA 功能。</p>
+</li>
+</ul>
+<p>认证机制上面常见的有 SMTP 邮件认证机制，以及 SMTP after POP 两种，不论是 哪一种机制， 基本上都是透过让使用者输入认证用的账号与密码，来确定他有合法使 用该 MTA 的权限，然后针对通过认证者开启 Relay 的支持就是了。如此一来你的 MTA不再启动 Open Relay ，并且客户端还是可以正常的利用认证机制来收发信件， 身为 管理员的你可就轻松多啰！ ^_^</p>
+<h5 id="电子邮件的数据内容"><a href="#电子邮件的数据内容" class="headerlink" title="电子邮件的数据内容"></a>电子邮件的数据内容</h5><p>看过上头的数据后，您应该对于 Mail server 有一些程度的认识了。再来要谈的是，那么一封 email 的内容有哪些部分呢？就跟人类社会的邮件有信封袋以及内部的信纸一样，email 也有所谓的标头 (header) 以及内容 (body) 两部份喔！ email 的标头部分 (类似邮件信封) 会有几个重要信息，包括：这封信来自那个 MTA、是由谁所发送出来的、要送给谁、 主旨为何等等，至于内容 (类似信封内的信纸) 则是发信者所填写的一些说明啰。如果你使用 dmtsai 的身份下达这个指令： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[dmtsai@www ~]$ <span class="built_in">echo</span> <span class="string">&quot;HaHa..&quot;</span> | mail -s <span class="string">&quot;from vbird&quot;</span> dmtsai</span><br></pre></td></tr></table></figure>
+
+<p>然后将自己的信箱内容叫出来，如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[dmtsai@www ~]$ cat /var/spool/mail/dmtsai</span><br><span class="line">From dmtsai@www.centos.vbird Mon Aug 8 18:53:32 2011 &lt;==发信者的email</span><br><span class="line">Return-Path: &lt;dmtsai@www.centos.vbird&gt; &lt;==这封信的来源</span><br><span class="line">X-Original-To: dmtsai</span><br><span class="line">Delivered-To: dmtsai@www.centos.vbird</span><br><span class="line">Received: by www.centos.vbird (Postfix, from userid 2007)</span><br><span class="line">id 6D1C8366A; Mon, 8 Aug 2011 18:53:32 +0800 (CST) &lt;==邮件ID</span><br><span class="line"><span class="comment"># 这部份主要在讲这封 email 的来源与目标收件者 MTA 在哪里的信息～</span></span><br><span class="line">Date: Mon, 08 Aug 2011 18:53:32 +0800 &lt;==收到信件的日期</span><br><span class="line">To: dmtsai@www.centos.vbird &lt;==收件者是谁啊！</span><br><span class="line">Subject: from vbird &lt;==就是信件标题</span><br><span class="line">User-Agent: Heirloom mailx 12.4 7/29/08</span><br><span class="line">MIME-Version: 1.0</span><br><span class="line">Content-Type: text/plain; charset=us-ascii</span><br><span class="line">Content-Transfer-Encoding: 7bit</span><br><span class="line">Message-Id: &lt;20110808105332.6D1C8366A@www.centos.vbird&gt; &lt;==给机器看的邮件 ID</span><br><span class="line">From: dmtsai@www.centos.vbird &lt;==发信者是谁啊！</span><br><span class="line">HaHa..</span><br></pre></td></tr></table></figure>
+
+<p>由原本的信件内容我们可以看到 email 确实是两部份，在标头部分记录了比较详细的收、发件者数据， 以及相关的来源、目标之 MTA 信息等等。但你要注意的是，那个 『Received:…』那一行资料是『会变动的』， 如同前面谈到的 MX 标志，如果一封信由 MUA 传送到 MTA 在由 MTA 传送到 MX 主机后，才传送到最终的 MTA 时， 那么这个 Received: 的数据将会记录每一部经手过的 MTA 信息喔！所以你可以借着这个记录数据慢慢的找回这封信的传递方向呢！</p>
+<p>此外，这个邮件的标头以及内容的分析部分，你还可以藉由某些分析软件来进行过 滤， 这部份我们将在后头再慢慢的介绍给大家了解喔！ ^_^！您先知道一封邮件至少 有这些数据，以后咱们再慢慢的解释啰！</p>
+<h4 id="MTA-服务器：-Postfix-基础设定"><a href="#MTA-服务器：-Postfix-基础设定" class="headerlink" title="MTA 服务器： Postfix 基础设定"></a>MTA 服务器： Postfix 基础设定</h4><p>可达成 MTA 的服务器软件非常多，例如我们的 CentOS 预设就提供了数十年老牌 子的 sendmail (<a target="_blank" rel="noopener" href="http://www.sendmail.org/">http://www.sendmail.org</a>) 以及近期以来很热门的 Postfix (<a target="_blank" rel="noopener" href="http://www.postfix.org).虽然/">http://www.postfix.org)。虽然</a> sendmail 曾是最为广泛使用的 mail server 软件， 但由于 sendmail 的配置文件太过于难懂，以及早期的程序漏洞问题导致的主机安全性 缺失；加上 sendmail 将所有的功能都统合在 /usr/sbin/sendmail 这个程序当中，导 致程序太大可能会有效能方面的疑虑等等， 所以新版的 CentOS 已经将预设的 mail server 调整为 postfix 啰！我们这里也主要介绍 postfix。当然啦，原理方面都一样， 您也可以自己玩玩其他的 mail server。</p>
+<h5 id="Postfix-的开发"><a href="#Postfix-的开发" class="headerlink" title="Postfix 的开发"></a>Postfix 的开发</h5><p>​        Postfix 是由 Wietse Zweitze Venema 先生(<a target="_blank" rel="noopener" href="http://www.porcupine.org/wietse">http://www.porcupine.org/wietse</a>) 所发展的。早期的 mail server 都是使用 sendmail 架设的，还真的是『仅此一家， 绝无分号』！不过，Venema 博士觉得 sendmail 虽然很好用，但是毕竟不够安全，尤 其效能上面并不十分的理想，最大的困扰是…sendmail 的配置文件 sendmail.cf 真 的是太难懂了！对于网管人员来说，要设定好 sendmail.cf 这个档案，真不是人作的 工作。</p>
+<p>​        为了改善这些问题， Venema 博士就在 1998 年利用他老大在 IBM 公司的第一个休假年进行一个计划：『 设计一个可以取代 sendmail 的软件套件，可以提供网站管理员一个更快速、 更安全、而且完全兼容于 sendmail 的 mail server 软件！』这个计划还真的成功了！ 而且也成功的使用在 IBM 内部，在 IBM 内可以说是完全取代了 sendmail 这个邮件服务器！在这个计划成功之后， Venema 博士也在1998 年首次释出这个自行发展的邮件服务器，并定名为 VMailer。</p>
+<p>​        不过，IBM 的律师却发现一件事，那就是 VMailer 这个名字与其他已注册的商标很类似， 这样可能会引起一些注册上面的困扰。为了避免这个问题，所以 Venema 博士就将这个邮件软件名称改为 Postfix ！</p>
+<p>『Post 有在什么什么之后』的意思，『fix 则 是修订』的意思，所以 postfix 有 『在修订之后』的意思。</p>
+<p>​        鸟哥个人认为， Venema 先生最早的构想并不是想要『创造一个全新的 Mail server 软件，而是想要制造一个可以完全兼容于 sendmail 的软件』，所以，Venema 先 生认为他自行发展的软件应该是『改良 sendmail 的缺失』，所以才称为 Postfix 吧！ 取其意为： 『改良了 sendmail 之后的邮件服务器软件！』</p>
+<p>​        所以啦，Postfix设计的理念上面，主要是针对『想要完全兼容于sendmail』所设计出来的一款『内在部分完全新颖』的一个邮件服务器软件。就是由于这个理念，因此Postfix改善了sendmail安全性上面的问题，改良了mailserver的工作效率，且让配置文件内容更具亲和力！因此，你可以轻易的由sendmail转换到Postfix上面！这也是当初Venema博士的最初构想啊！</p>
+<p>​        就是基于这个构想，所以Postfix在外部配置文件案的支持度，与sendmail几乎没有两样，同样的支持aliases这个档案，同样的支持~/.forward这个档案，也同样的支持SASL的SMTP邮件认证功能等等！所以，呵呵！赶紧来学一学怎样架设Postfix这个相当出色的邮件服务器吧！^_^</p>
+<h5 id="所需要的软件与软件结构"><a href="#所需要的软件与软件结构" class="headerlink" title="所需要的软件与软件结构"></a>所需要的软件与软件结构</h5><p>由于CentOS6.x预设就是提供postfix的！所以根本无须调整啥咚咚～直接来使用吧！那么postfix有哪些重要的配置文件呢？他主要的配置文件都在/etc/postfix/当中，详细的档案内容就让我们来谈谈：</p>
+<ul>
+<li>/etc/postfix/main.cf</li>
+</ul>
+<p>这就是主要的postfix配置文件啰，几乎所有的设定参数都是在这个档案内规范的！这个档案预设就是一个完整的说明档了，你可以参考这个档案的内容就设定好属于你的postfixMTA呢！只要修改过这个档案，记得要重新启动postfix喔！</p>
+<ul>
+<li>/etc/postfix/master.cf</li>
+</ul>
+<p>主要规定了postfix每个程序的运作参数，也是很重要的一个配置文件。不过这个档案预设已经很OK了，通常不需要更改他。</p>
+<ul>
+<li>/etc/postfix/access (利用 postmap 处理)</li>
+</ul>
+<p>可以设定开放Relay或拒绝联机的来源或目标地址等信息的外部配置文件，不过这个档案要生效还需要在/etc/postfix/main.cf启动这个档案的用途才行。且设定完毕后需要以postmap来处理成为数据库档案呢！</p>
+<ul>
+<li>/etc/aliases (利用 postalias 或 newaliases 均可)</li>
+</ul>
+<p>做为邮件别名的用途，也可以作为邮件群组的设定喔！ 至于常见的执行档则有底下这些：</p>
+<ul>
+<li>/usr/sbin/postconf (查阅 postfix 的设定数据)</li>
+</ul>
+<p>这个指令可以列出目前你的 postfix 的详细设定数据，包括系统默认值也会被列出来， 所以数据量相当的庞大！如果你在 main.cf 里面曾经修改过某些预设 参数的话，想要仅列出非默认值的设定数据， 则可以使用『postconf -n』这个 选项即可。</p>
+<ul>
+<li>/usr/sbin/postfix (主要的 daemon 指令)</li>
+</ul>
+<p>此为 postfix 的主要执行档，你可以简单的使用他来启动或重新读取配置文件： </p>
+<p>[root@www ~]# postfix check &lt;==检查 postfix 相关的档案、权限等是否正确！ </p>
+<p>[root@www ~]# postfix start &lt;==开始 postfix 的执行 </p>
+<p>[root@www ~]# postfix stop &lt;==关闭 postfix </p>
+<p>[root@www ~]# postfix flush &lt;==强制将目前正在邮件队列的邮件寄出！ </p>
+<p>[root@www ~]# postfix reload &lt;==重新读入配置文件，也就是</p>
+<ul>
+<li>/etc/postfix/main.cf</li>
+</ul>
+<p>要注意的是，每次更动过 main.cf 后，务必重新启动 postfix，可简单的使用 『postfix reload』即可。不过老实说，鸟哥还是习惯使用 /etc/init.d/postfix reload..</p>
+<ul>
+<li>/usr/sbin/postalias</li>
+</ul>
+<p>设定别名数据库的指令，因为 MTA 读取数据库格式的档案效能较佳，所以我们 都会将 ASCII 格式的档案重建为数据库。 在 postfix 当中，这个指令主要在 转换 /etc/aliases 成为 /etc/aliases.db 啰！用法为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases</span></span><br><span class="line"><span class="comment"># hash 为一种数据库的格式，然后那个 /etc/aliases.db 就会自动被更新啰！</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>/usr/sbin/postcat</li>
+</ul>
+<p>主要用在检查放在queue(队列)当中的信件内容。由于队列当中的信件内容是给MTA看的，所以格式并不是一般我们人类看的懂的文字数据。所以这个时候你得要用postcat才可以看出该信件的内容。在/var/spool/postfix内有相当多的目录，假设内有一个文件名为/deferred/abcfile，那你可以利用底下的方式来查询该档案的内容喔：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># postcat /var/spool/postfix/deferred/abcfile</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>/usr/sbin/postmap</li>
+</ul>
+<p>这个指令的用法与 postalias 类似，不过他主要在转换 access 这个档案的数据库啦！用法为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># postmap hash:/etc/postfix/access</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>/usr/sbin/postqueue</li>
+</ul>
+<p>类似mailq的输出结果，例如你可以输入『postqueue-p』看看就知道了！整个postfix的软件结构大致上是这个样子的，接下来让我们先来简单的处理一下postfix的收发信件功能吧！</p>
+<h5 id="一个邮件服务器的设定案例"><a href="#一个邮件服务器的设定案例" class="headerlink" title="一个邮件服务器的设定案例"></a>一个邮件服务器的设定案例</h5><p>前面谈到mailserver与DNS系统有很大的相关性，所以如果你想要架设一部可以连上Internet的邮件服务器时，你必需要已经取得合法的A与MX主机名，而且最好反解也已经向您的ISP申请修改设定了，这可是个大前提！不要忽略他！在底下的练习当中以之前DNS内的设定为依据，主要的参数是这样的：</p>
+<p>邮件服务器的主要名称为：<a target="_blank" rel="noopener" href="http://www.centos.vbird/">www.centos.vbird</a><br>邮件服务器尚有别名为linux.centos.vbird及ftp.centos.vbird也可以收发信件；<br>此邮件服务器已有MX设定，直接指向自己(<a target="_blank" rel="noopener" href="http://www.centos.vbird/">www.centos.vbird</a>)<br>这个<a target="_blank" rel="noopener" href="http://www.centos.vbird有个a的标志指向192.168.100.254./">www.centos.vbird有个A的标志指向192.168.100.254。</a></p>
+<p>在实际的邮件服务器设定当中，上述的几个标志是很重要的，请自行参考DNS章节的介绍吧！底下就让我们来实际设定postfix服务器啰！</p>
+<h5 id="让-Postfix-可监听-Internet-来收发信件"><a href="#让-Postfix-可监听-Internet-来收发信件" class="headerlink" title="让 Postfix 可监听 Internet 来收发信件"></a>让 Postfix 可监听 Internet 来收发信件</h5><p>在预设的情况下，CentOS6.x的MTA仅针对本机进行监听，不相信吗？测测看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># netstat -tlnp | grep :25 </span></span><br><span class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</span><br><span class="line">PID/Program name tcp 0 0 127.0.0.1:25 0.0.0.0:* LISTEN </span><br><span class="line">3167/master</span><br></pre></td></tr></table></figure>
+
+<p>所以如果你要对整个Internet开放的话，就得要努力的搞定几个简单的设定啰！而几乎所有的设定你都可已经由/etc/postfix/main.cf这个档案搞定！修改前你需要注意的项目有：</p>
+<p>『#』符号是批注的意思；</p>
+<ul>
+<li><p>所有设定值以类似『变量』的设定方法来处理，例如myhostname=<a target="_blank" rel="noopener" href="http://www.centos.vbird,请注意等号的两边要给予空格符喔,且第一个字符不可以是空白,亦即『my..』要由行首写起;/">www.centos.vbird，请注意等号的两边要给予空格符喔，且第一个字符不可以是空白，亦即『my..』要由行首写起；</a></p>
+</li>
+<li><p>可以使用『$』来延伸使用变量设定，例如myorigin=$myhostname，会等于myorigin=<a target="_blank" rel="noopener" href="http://www.centos.vbird;/">www.centos.vbird；</a></p>
+</li>
+<li><p>如果该变量支持两个以上的数据，则使用空格符来分隔，不过建议使用逗号加空格符『,』来处理。例如：mydestination=$myhostname,$mydomain,linux.centos.vbird，意指mydestination支持三个数据内容之意。</p>
+</li>
+<li><p>可使用多行来表示同一个设定值，只要在第一行最后有逗号，且第二行开头为空格符，即可将数据延伸到第二行继续书写(所以刚刚第二点才说，开头不能留白！)；</p>
+</li>
+<li><p>若重复设定某一项目，则以较晚出现的设定值为准！</p>
+</li>
+</ul>
+<p>要让你的 postfix 可以收发信件时，你必需要启动的设定数据有底下这些喔：</p>
+<ul>
+<li><p>myhostname：设定主机名，需使用FQDN喔这个项目在于设定你的主机名，且这个设定值会被后续很多其他的参数所引用，所以必须要设定正确才行。你应该要设定成为完整的主机名。在的这个练习当中，应该设定为：myhostname=<a target="_blank" rel="noopener" href="http://www.centos.vbird才对.除了这个设定值之外,还有一个mydomain的设定项目,这个项目默认会取$myhostname第一个『.』之后的名称.举例来说上头设定完毕后,预设的mydomain就是centos.vbird啰!你也可以自行设定他./">www.centos.vbird才对。除了这个设定值之外，还有一个mydomain的设定项目，这个项目默认会取$myhostname第一个『.』之后的名称。举例来说上头设定完毕后，预设的mydomain就是centos.vbird啰！你也可以自行设定他。</a></p>
+</li>
+<li><p>myorigin：发信时所显示的『发信源主机』项目这个项目在设定『邮件头上面的mailfrom的那个地址』，也就是代表本MTA传出去的信件将以此设定值为准喔！如果你在本机寄信时忘记加上Mailfrom字样的话，那么就以此值为准了。默认这个项目以$myhostname为主的，例如：myorigin=$myhostname</p>
+</li>
+<li><p>inet_interfaces：设定postfix的监听接口(极重要)在预设的情况下你的Postfix只会监听本机接口的lo(127.0.0.1)而已，如果你想要监听整个Internet的话，请开放成为对外的接口，或者是开放给全部的接口，常见的设定方法为：inet_interfaces=all才对！由于如果有重复设定项目时，会以最晚出现的设定值为准，所以最好只保留一组inet_interfaces的设定喔！</p>
+</li>
+<li><p>inet_protocols：设定postfix的监听IP协议 预设CentOS的postfix会去同时监听IPv4,IPv6两个版本的IP，如果你的网络环境里面仅有IPv4时，那可以直接指定inet_protocols=ipv4就会避免看到:::1之类的IP出现呦！</p>
+</li>
+<li><p>mydestination：设定『能够收信的主机名』(极重要) </p>
+<p>这个设定项目很重要喔！因为我们的主机有非常多的名字，那么对方填写的 mail to 到底要写哪个主机名字我们才能将该信件收下？ 就是在这里规范的！也就是 说，你的许多主机名当中，仅有写入这个设定值的名称才能作为 email 的主机 地址。 在我们这个练习当中这部主机有三个名字，所以写法为： mydestination = $myhostname, localhost, linux.centos.vbird, ftp.centos.vbird 如果你想要将此设定值移动到外部档案，那可以使用类似底下的作法： mydestination = /etc/postfix/local-host-names ，然后在 local-host-names 里面将可收信的主机名写入即可。一般来说，不建议你额外建立local-host-names这个档案啦，直接写入main.cf即可说！特别留意的是，如果你的DNS里头的设定有MX标志的话，那么请将MX指向的那个主机名一定要写在这个mydestination内，否则很容易出现错误讯息喔！一般来说，使用者最常发生错误的地方就在这个设定里头呢！</p>
+</li>
+<li><p>mynetworks_style：设定『信任网域』的一项指标这个设定值在规定『与主机在同一个网域的可信任客户端』的意思！举例来说，我的主机IP是192.168.100.254，如果我相信整个局域网络内(192.168.100.0/24)的用户的话，那我可规定此设定值为『subnet』吶！不过，一般来说，因为底下的mynetworks会取代这个设定值，所以不设定也没有关系喔！如果要设定的话，最好设定成为host即可(亦即仅信任这部MTA主机而已)。</p>
+</li>
+<li><p>mynetworks ：规定信任的客户端 (极重要)</p>
+<p>你的MTA能不能帮忙进行Relay与这个设定值最有关系！举例来说，我要开放本机与内部网域的IP时，就可以这样进行设定：mynetworks=127.0.0.0/8,192.168.100.0/24。如果你想要以  /etc/postfix/access这个档案来控制relay的用户时，那可以建议你将上述的数据改写成这样：mynetworks=127.0.0.0/8,192.168.100.0/24,hash:/etc/postfix/access然后你只要再建立access之后重整成数据库后，嘿嘿！就能够设定Relay的用户啰！</p>
+</li>
+<li><p>relay_domains：规范可以帮忙relay的下一部MTA主机地址相对于mynetworks是针对『信任的客户端』而设定的，这个relay_domains则可以视为『针对下游MTA服务器』而设定的。举例来说，如果你这部主机是<br><a target="_blank" rel="noopener" href="http://www.niki.centos.vbird的mx主机时,那你就得要在relay_domains设定针对整个niki.centos.vbird这个领域的目标信件进行转递才行.在预设的情况下,这个设定值是$mydestination而已啦./">www.niki.centos.vbird的MX主机时，那你就得要在relay_domains设定针对整个niki.centos.vbird这个领域的目标信件进行转递才行。在预设的情况下，这个设定值是$mydestination而已啦。</a></p>
+<p>你必需要注意的『Postfix 预设并不会转递 MX 主机的信件』，意思就是说：如 果你有两部主机，一部是上游的 MTAup ，一部是下游的MTAdown ，而 MTAdown 规范的 MX 主机是 MTAup，由 22.1.2 谈到的 DNS 的 MX 设定值与信件传递方 向，我们知道任何想要寄给 MTAdown 主机的信件， 都会先经过 MTAup 来转递 才行！此时如果那部 MTAup 没有开启帮 MTAdown 进行 relay 的权限时， 那么 任何传给 MTAdown 的信件将『全部都被 MTAup 所退回』！从此 MTAdown 就无 法收到任何信件了。 上一段的说明请您特别再想一想，因为如果你在大公司服务而且你的公司上、下 游均有 mail server 时， 并且也有设定 MX 的状况下，嘿嘿！这个 relay_domains 就很重要啦！上游的 MTA 主机必需要启动这个设定。 一般来说 除非你是某部 MTA 主机的 MX 源头，否则这个设定项目可以忽略不设定他。 而 如果你想要帮你的客户端转递信件到某部特定的 MTA 主机时，这个设定项目也 是可以设定的啦。 默认请您保留默认值即可。</p>
+</li>
+<li><p>alias_maps ：设定邮件别名</p>
+<p>就是设定邮件别名的设定项目，只要指定到正确的档案去即可，这个设定值可以保留默认值啊：</p>
+<p>在了解上述的设定后，以范例来看的话，鸟哥有更动过或注明重要的设定值 以及相关档案是这样处理的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/postfix/main.cf</span></span><br><span class="line">myhostname = www.centos.vbird &lt;==约在第 77 行</span><br><span class="line">myorigin = <span class="variable">$myhostname</span> &lt;==约在第 99 行</span><br><span class="line">inet_interfaces = all &lt;==约在第 114 行，117 行要批注掉</span><br><span class="line">inet_protocols = ipv4 &lt;==约在第 120 行</span><br><span class="line">mydestination = <span class="variable">$myhostname</span>, localhost.<span class="variable">$mydomain</span>, localhost,</span><br><span class="line">linux.centos.vbird, ftp.centos.vbird &lt;==约在第 165,166 行</span><br><span class="line">mynetworks = 127.0.0.0/8, 192.168.100.0/24, <span class="built_in">hash</span>:/etc/postfix/access &lt;==约在 269 行</span><br><span class="line">relay_domains = <span class="variable">$mydestination</span> &lt;==约在第 299 行</span><br><span class="line">alias_maps = <span class="built_in">hash</span>:/etc/aliases</span><br><span class="line">alias_database = <span class="built_in">hash</span>:/etc/aliases &lt;==约在第 389, 400 行</span><br><span class="line"><span class="comment"># 其他的设定值就先保留默认值即可啊！</span></span><br><span class="line">[root@www ~]<span class="comment"># postmap hash:/etc/postfix/access</span></span><br><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases</span></span><br></pre></td></tr></table></figure>
+
+<p>因为 main.cf 当中我们有额外加入两个外部配置文件 (mynetworks 及 alias_maps) ，所以才会额外进行 postmap 及 postalias。然后准备来启动啦！你可以这样处理喔：</p>
+</li>
+</ul>
+<ol>
+<li><p>先检查配置文件的语法是否有错误</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># /etc/init.d/postfix check &lt;==没有讯息，表示没有问题。</span></span><br></pre></td></tr></table></figure></li>
+<li><p>启动与观察 port number</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># /etc/init.d/postfix restart</span></span><br><span class="line">[root@www ~]<span class="comment"># netstat -tlunp | grep &#x27;:25&#x27;</span></span><br><span class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</span><br><span class="line">PID/Program name</span><br><span class="line">tcp 0 0 0.0.0.0:25 0.0.0.0:* LISTEN</span><br><span class="line">13697/master</span><br></pre></td></tr></table></figure>
+
+<p>很简单吧！这样就设定妥当了。假设你的防火墙已经处理完毕，那你的Postfix已经可以开放客户端进行转递，并且也可以收受信件啰！不过，到底在预设的情况下我们的postfix可以收下哪些信件？又可以针对哪些设定值的内容进行转递呢？这就得要参考下一小节的说明了。</p>
+</li>
+</ol>
+<h5 id="信件传送流程与收信、relay-等重要观念"><a href="#信件传送流程与收信、relay-等重要观念" class="headerlink" title="信件传送流程与收信、relay 等重要观念"></a>信件传送流程与收信、relay 等重要观念</h5><p>我想，您对于MTA的设定与收发信件应该有一定程度的概念了，不过要妥善设定好你的MTA时，尤其是想要了解到整部MTA是如何收、发信件时，你最好还是要知道『我这部MTA如何接受来源主机所传来的信件，以及将信件转递到下一部主机去』的整个流程啊。一般来说一封邮件传送会经过许多的流程为：</p>
+<ol>
+<li><p>送信端与收信端两部主机间会先经过一个握手 (ehlo) 的阶段，此时送信端 被记录为发信来源(而不是 mail from)。 通过握手后就可以进行信件标头 (header) 的传送；</p>
+</li>
+<li><p>此时收信端主机会分析标头的信息，若信件之Mailto:主机名为收信端主机，且该名称符合mydestination的设定，则该信件会开始被收下至队列，并进一步送到mailbox当中；若不符合mydestination的设定，则终止联机且不会进行信件内容(body)的传送；</p>
+</li>
+<li><p>若Mailto:主机名非为收信端本身，则开始进行转递(relay)的分析。</p>
+</li>
+<li><p>转递过程首先分析该信件的来源是否符合信任的客户端(这个客户端为步骤1所记录的发信主机喔)，亦即来源是否符合mynetworks的设定值，若符合则开始收下信件至队列中，并等待MDA将信件再转递出去，若不符mynetworks则继续下一步；</p>
+</li>
+<li><p>分析信件来源或目标是否符合 relay_domains 的设定，若符合则信件将被收下至队列，并等待 MDA 将信件再转递出去；</p>
+</li>
+<li><p>若这封信的标头数据都不合乎上述的规范，则终止联机，并不会接受信件的内容数据的。</p>
+</li>
+</ol>
+<p>整个流程有点像底下这样：</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/Icj5Hf"><img src="https://z3.ax1x.com/2021/11/14/Icj5Hf.png" alt="Icj5Hf.png"></a></p>
+<p>也就是说标头分析通过后，你的信件内容才会开始上传到主机的队列，然后透过MDA来处理该信件的流向。而不是将信件完整的传送到主机后才开始分析的喔！这个得要特别注意吶！而透过上述的流程后，在暂不考虑access以及MDA的分析机制中，一部MTA想要正确的收、发信件时，电子邮件必需要符合：</p>
+<p>收信方面：必需符合底下需求：</p>
+<ol>
+<li><p>发信端必需符合 $inet_interfaces 的设定；</p>
+</li>
+<li><p>信件标头之收件者主机名必需符合 $mydestination 的设定， 或者收件主机名需要符合 $virtual_maps (与虚拟主机有关) 的设定；</p>
+</li>
+</ol>
+<p>转递方面 (Relay)：必需符合底下需求：</p>
+<ol>
+<li><p>发信端必需符合 $inet_interfaces 的设定；</p>
+</li>
+<li><p>发信端来源必需为 $mynetworks 的设定；发信端来源或信件标头之收件者主机名符合 $relay_domains 之设定内容。 同样的原理与想法你可以将他用在 sendmail 的设定当中喔！ ^_^！不过很多垃圾信却是藉由这个预设的收发管道来发送， 怎么说呢？请看底下的分析：</p>
+</li>
+</ol>
+<p>例题： 在我的主机上面竟然发现这样的广告信，那就是『利用我的主机发送广告信给我自己！』为什么这样也可以呢？ </p>
+<p>答： 首先，你必需要熟悉一下上述的流程，在第 2 个步骤当中我们知道，当主机收到一封信且这封信的目标是自己，并且也符合mydestination 的设定 时，该信件就会被收下来而不必验证客户端是否来自于mynetworks 了。所以说，任何人都可以用这个流程来寄信给你啊。不过，你的 MTA 并不是 open relay 啦，不会帮人家发送广告信的，不用担心。</p>
+<p>例题：我的主机明明没有Openrelay，但很多其他的MTA管理员发信给我，说我的主机的某个账号持续发送广告信，但是我的主机明明没有那个账号啊！这是怎么回事？</p>
+<p>答： 仔细看一下流程的步骤 1 与 2 ，确认该封信能否被收下来与发信端及收信端主机名有关。而我们知道在邮件的 header 里面还有一个 mail from 的标头设定项目，这个标头设定是我们在查阅邮件时看到的『回邮地址』，这个数据是可以伪造的！而且他与收发信件的数据无关！所以，您应该要告知对方MTA管理员，请他提供详细的log数据，才能够判断该封信是否由你的主机所发送出去的。<br>一般来说，目前的广告业者很多都是利用这种欺敌的方式来处理的，所以您必需要请对方提供详细的logfile数据以供查验才行喔！</p>
+<h5 id="设定邮件主机权限与过滤机制-etc-postfix-access"><a href="#设定邮件主机权限与过滤机制-etc-postfix-access" class="headerlink" title="设定邮件主机权限与过滤机制 /etc/postfix/access"></a>设定邮件主机权限与过滤机制 /etc/postfix/access</h5><p>基本上，指定了Postfix的mynetworks的信任来源就能够让使用者relay了，不过如果你依照鸟哥上述的方式来设定你的mynetworks的话，那么我们还可以利用access这个档案来额外管理我们的信件过滤呢！基本的access语法为：</p>
+<p>规范的范围或规则 Postfix 的动作 (范例如下) </p>
+<p>IP/部分 IP/主机名/Email 等 OK/REJECT </p>
+<p>假设你想要让 120.114.141.60 还有 .edu.tw 可以使用这部 MTA 来转递信件，且不许 </p>
+<p>av.com 以及 192.168.2.0/24 这个网域的使用时，可以这样做： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/postfix/access </span></span><br><span class="line">120.114.141.60 </span><br><span class="line">OK</span><br><span class="line">.edu.tw </span><br><span class="line">OK</span><br><span class="line">av.com </span><br><span class="line">REJECT </span><br><span class="line">192.168.2. </span><br><span class="line">REJECT</span><br><span class="line"><span class="comment"># OK 表示可接受，而 REJECT 则表示拒绝。 </span></span><br><span class="line">[root@www ~]<span class="comment"># postmap hash:/etc/postfix/access </span></span><br><span class="line">[root@www ~]<span class="comment"># ls -l /etc/postfix/access* </span></span><br><span class="line">-rw-r--r--. 1 root root 19648 2011-08-09 14:05 /etc/postfix/access </span><br><span class="line">-rw-r--r--. 1 root root 12288 2011-08-09 14:08 /etc/postfix/access.db </span><br><span class="line"><span class="comment"># 你会发现有个 access.db 的档案才会同步更新！</span></span><br></pre></td></tr></table></figure>
+
+<p>这才是 postfix 实际读取的！</p>
+<p>​        用这个档案设定最大的好处是，你不必重新启动 postfix，只要将数据库建立好， 立刻就生效了！这个档案还有其它的进阶功能，你可以自行进入该档案查阅就知道了。但是进阶设定还需要 main.cf 内的其他参数有设定才行！如果只有之前 $mynetworks 的设定值时，你只能利用 access.db 的方式来开放 relay 的能力而已。不过，至少他可以让我们的设定简化啰！ ^_^ </p>
+<h5 id="设定邮件别名：-etc-aliases-forward"><a href="#设定邮件别名：-etc-aliases-forward" class="headerlink" title="设定邮件别名： /etc/aliases, ~/.forward"></a>设定邮件别名： /etc/aliases, ~/.forward</h5><p>​        想一想，你的主机里面不是有很多系统账号吗？例如named,apache,mysql…，那么以这些账号执行的程序若有讯息发生时，他会将该讯息以email的方式传给谁？应该就是传给named,apache…等账号自己吧。不过，你会发现其实这些系统账号的信息都是丢给root！这是因为其他的系统账号并没有密码可登入，自然也就无法接收任何邮件了，所以若有邮件就给系统管理员啰。不过，咱们的MTA怎么知道这些信件要传给root？这就得要aliases这个邮件别名配置文件来处理啦！</p>
+<p>​        邮件别名配置文件： /etc/aliases 在你的 /etc/aliases 档案内，你会发现类似底下的字样： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/aliases</span></span><br><span class="line">mailer-daemon: postmaster </span><br><span class="line">postmaster: root </span><br><span class="line">bin: root </span><br><span class="line">daemon: root </span><br><span class="line">....(底下省略)....</span><br></pre></td></tr></table></figure>
+
+<p>左边是『别名』右边是『实际存在的使用者账号或者是 email address』！ 就是透过这个设定值，所以让我们可以将所有系统账号所属的信件通通丢给 root 啊！好，我现在将他扩大化，假如你的 MTA 内有一个实际的账号名称为 dmtsai ，这个使用者还想要使用 dermintsai 这个名称来收他的信件， 那么你可以这样做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/aliases </span></span><br><span class="line">dermintsai: dmtsai</span><br><span class="line"><span class="comment"># 左边是你额外所设定的，右边则是实际接收这封信的账号！ </span></span><br><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases </span></span><br><span class="line">[root@www ~]<span class="comment"># ll /etc/aliases* </span></span><br><span class="line">-rw-r--r--. 1 root root 1535 2011-08-09 14:10 /etc/aliases </span><br><span class="line">-rw-r--r--. 1 root root 12288 2011-08-09 14:10 /etc/aliases.db</span><br></pre></td></tr></table></figure>
+
+<p>从此之后不论是 <a href="mailto:&#x64;&#109;&#x74;&#x73;&#x61;&#x69;&#x40;&#119;&#119;&#119;&#46;&#99;&#x65;&#x6e;&#x74;&#111;&#115;&#x2e;&#118;&#x62;&#105;&#x72;&#x64;">&#x64;&#109;&#x74;&#x73;&#x61;&#x69;&#x40;&#119;&#119;&#119;&#46;&#99;&#x65;&#x6e;&#x74;&#111;&#115;&#x2e;&#118;&#x62;&#105;&#x72;&#x64;</a> 还是 <a href="mailto:&#x64;&#101;&#114;&#x6d;&#x69;&#110;&#116;&#x73;&#x61;&#x69;&#64;&#x77;&#119;&#x77;&#x2e;&#99;&#x65;&#x6e;&#116;&#x6f;&#115;&#46;&#118;&#98;&#105;&#114;&#x64;">&#x64;&#101;&#114;&#x6d;&#x69;&#110;&#116;&#x73;&#x61;&#x69;&#64;&#x77;&#119;&#x77;&#x2e;&#99;&#x65;&#x6e;&#116;&#x6f;&#115;&#46;&#118;&#98;&#105;&#114;&#x64;</a> 都会将信件丢到 /var/spool/mail/dmtsai 这个信箱当中喔！很方便吧！</p>
+<ul>
+<li><p>/etc/aliases 实际应用一：</p>
+<p>让一般账号可接收 root 的信，假设你是系统管理员，而你常用的一般账号为 dmtsai，但是系统出错时的重要信件都是寄给 root 啊， 偏偏 root 的信件不能被直接读取….所以说，如果能够将『给 root 的信也转寄一份给 dmtsai 』的话， 那就太好了！可以达到吗？当然可以！你可以这样做：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/aliases </span></span><br><span class="line">root: root,dmtsai &lt;==鸟哥建议这种写法！ </span><br><span class="line"><span class="comment"># 信件会传给 root 与 dmtsai 这两个账号！ </span></span><br><span class="line">root: dmtsai &lt;==如果 </span><br><span class="line">dmtsai 不再是管理员怎办？ </span><br><span class="line"><span class="comment"># 从此 root 收不到信了，都由 dmtsai 来接受！</span></span><br><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases</span></span><br></pre></td></tr></table></figure>
+
+<p>上面那两行你可以择一使用，看看root要不要保留他的信件都可以的！鸟哥建议使用第一种方式，因为这样一       来，你的dmtsai可以收到root的信，且root自己也可以『备份』一份在他的信箱内，比较安全啦！</p>
+<ul>
+<li><p>/etc/aliases 实际应用二：</p>
+<p>发送群组寄信功能 想象一个情况，如果你是学校的老师，你虽然只带一班导生，但是『每年都一班』时，如果有一天你要将信发给所有的学生，那在写email的标头时，可能就会头昏昏的了(因为联络人名单太多了)！这个时候你可以这样做：(假设主机上学生的账号为std001,std002…)</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/aliases </span></span><br><span class="line">student2011: </span><br><span class="line">std001,std002,std003,std004... </span><br><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases</span></span><br></pre></td></tr></table></figure>
+
+<p>如此一来只要寄信到这部主机的student2011这个不存在的账号时，该封信就会被分别存到各个账号里头去，管理上面是否很方便啊！^_^！事实上，邮件别名除了填写自己主机上面的实体用户之外，其实你可以填写外部主机的email喔！例如你要将本机的dermintsai那个不存在的用户的信件除了传给dmtsai之外，还要外传到<a href="mailto:&#100;&#x6d;&#116;&#x73;&#97;&#x69;&#64;&#109;&#97;&#x69;&#108;&#x2e;&#110;&#x69;&#107;&#105;&#x2e;&#99;&#x65;&#110;&#116;&#111;&#115;&#x2e;&#118;&#98;&#105;&#114;&#x64;">&#100;&#x6d;&#116;&#x73;&#97;&#x69;&#64;&#109;&#97;&#x69;&#108;&#x2e;&#110;&#x69;&#107;&#105;&#x2e;&#99;&#x65;&#110;&#116;&#111;&#115;&#x2e;&#118;&#98;&#105;&#114;&#x64;</a>时，可以这样做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /etc/aliases </span></span><br><span class="line">dermintasi: dmtsai,dmtsai@mail.niki.centos.vbird </span><br><span class="line">[root@www ~]<span class="comment"># postalias hash:/etc/aliases</span></span><br></pre></td></tr></table></figure>
+
+<p>很方便吧！更多的功能就期待您自行发掘啰！ </p>
+<p><strong>Tips:</strong> 在这本书里面，dmtai的家目录并非在正规的/home底下，而是放置于/winhome当中(参考第十六章的练习)，所以实际操作mail指令会出错！这是因为SELinux的关系！请参考/var/log/messages底下的建议动作去处理即可！</p>
+<p>个人化的邮件转递：~/.forward虽然/etc/aliases可以帮我们达到邮件别名设定的好处，不过/etc/aliases是只有root才能修改的档案权限，那我们一般使用者如果也想要进行邮件转递时，该如何是好？没关系，可以透过自己家目录下的.forward这个档案喔！举例来说，我的dmtsai这个账号所接收到的信件除了自己要保留一份之外，还要传给本机上的vbird以及<a href="mailto:&#100;&#x6d;&#x74;&#x73;&#97;&#x69;&#64;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x6e;&#x69;&#x6b;&#105;&#46;&#99;&#101;&#x6e;&#116;&#x6f;&#115;&#46;&#x76;&#x62;&#105;&#114;&#x64;">&#100;&#x6d;&#x74;&#x73;&#97;&#x69;&#64;&#x6d;&#x61;&#x69;&#x6c;&#46;&#x6e;&#x69;&#x6b;&#105;&#46;&#99;&#101;&#x6e;&#116;&#x6f;&#115;&#46;&#x76;&#x62;&#105;&#114;&#x64;</a>时，那你可以这样做设定：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[dmtsai@www ~]$ vim .forward</span><br><span class="line"><span class="comment"># 注意！我现在的身份现在是 dmtsai 这个一般身份，而且在他的家目录下！</span></span><br><span class="line">dmtsai </span><br><span class="line">vbird </span><br><span class="line">dmtsai@mail.niki.centos.vbird </span><br><span class="line">[dmtsai@www ~]$ chmod 644 .forward</span><br></pre></td></tr></table></figure>
+
+<p>记得这个档案内容是一行一个账号(或email)，而且权限方面非常重要：该档案所在用户家目录权限，其group、other不可以有写入权限。.forward档案权限，其group、other不可以有写入权限。如此一来这封信就会开始转递啰！有趣吧！^_^</p>
+<h5 id="察看信件队列信息：-postqueue-mailq"><a href="#察看信件队列信息：-postqueue-mailq" class="headerlink" title="察看信件队列信息： postqueue, mailq"></a>察看信件队列信息： postqueue, mailq</h5><p>​        说实话，设定到此为止咱们的postfix应该可以应付一般小型企业之mailserver的用途了！不过，有的时候毕竟因为网络的问题或者是对方主机的问题，可能导致某些信件无法送出而被暂存在队列中，那我们如何了解队列当中有哪些邮件呢？还有，在队列当中等待送出的信件是如何送出的呢？</p>
+<p>​        如果该封信在五分钟之内无法寄出，则通常系统会发出一封『警告信』给原发信者，告知该封邮件尚无法被寄送出去，不过，系统仍会持续的尝试寄出该封邮件；</p>
+<p>​        如果在四小时候仍无法寄出，系统会再次的发出警告信给原发信者；</p>
+<p>​        如果持续进行五天都无法将信件送出，那么该封邮件就会退回给原发信者了！当然啦，某些MTA已经取消了警告信的寄发，不过原则上，如果信件无法实时寄出去的话MTA还是会努力尝试5天的，如果接下来的5天都无法送出时，才会将原信件退回给发信者。一般来说，如果MTA设定正确且网络没有问题时，应该是不可能会有信件被放在队列当中而传不出去的，所以如果发现有信件在队列时，细的瞧一瞧啰！检查队列内容的方法可以使用mailq，也可以使用postqueue-p来检查的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># postqueue -p </span></span><br><span class="line">Mail queue is empty</span><br></pre></td></tr></table></figure>
+
+<p>若您的邮件如此显示时，恭喜您，没有什么问题邮件在队列当中。不过如果你将postfix关闭，并尝试发一封信给任何人，那就可能会出现如下的画面啦：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># /etc/init.d/postfix stop </span></span><br><span class="line">[root@www ~]<span class="comment"># echo &quot;test&quot; | mail -s &quot;testing queue&quot; root </span></span><br><span class="line">[root@www ~]<span class="comment"># postqueue -p </span></span><br><span class="line">postqueue: warning: Mail system is down -- accessing queue directly </span><br><span class="line">-Queue ID- --Size-- ----Arrival Time---- -Sender/Recipient------- </span><br><span class="line">5CFBB21DB 284 Tue Aug 9 06:21:58 root </span><br><span class="line">root </span><br><span class="line">-- 0 Kbytes <span class="keyword">in</span> 1 Request.</span><br><span class="line"><span class="comment"># 第一行就说明了无法寄出的原因为 Mail system is down 啦！ </span></span><br><span class="line"><span class="comment"># 然后才出现无法寄出的信件信息！包括来源与目标喔！</span></span><br></pre></td></tr></table></figure>
+
+<p>输出的信息主要为： </p>
+<ul>
+<li><p>Queue ID：表示此封邮件队列的代表号 (ID)，这个号码是给 MTA 看的，我们看不懂不要紧； </p>
+</li>
+<li><p>Size ：这封信有多大容量 (bytes) 的意思； </p>
+</li>
+<li><p>Arrival Time：这封信什么时候进入队列的，并且可能会说明无法立即传送出去的原因； </p>
+</li>
+<li><p>Sender/Recipient：送信与收信者的电子邮件啰！ </p>
+</li>
+</ul>
+<p>事实上这封信是放置在 /var/spool/postfix 里面，由于信件内容已经编码为给MTA 看的资料排列， 所以你可以使用 postcat 来读出原信件的内容喔！例如这样做(注意看档名与 Queue ID 的对应！)：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># cd /var/spool/postfix/maildrop </span></span><br><span class="line">[root@www maildrop]<span class="comment"># postcat 5CFBB21DB &lt;==这个档名就是 Queue ID </span></span><br><span class="line">*** ENVELOPE RECORDS 5CFBB21DB *** &lt;==说明队列的编号啊 </span><br><span class="line">message_arrival_time: Tue Aug 9 14:21:58 2011 </span><br><span class="line">named_attribute: rewrite_context=<span class="built_in">local</span> &lt;==分析 named (DNS) 的特性来自本机 </span><br><span class="line">sender_fullname: root &lt;==发信者的大名与 email </span><br><span class="line">sender: root recipient: root &lt;==就是收件者啰！</span><br><span class="line">*** MESSAGE CONTENTS 5CFBB21DB *** &lt;==底下则是信件的实际内容啊！</span><br><span class="line">Date: Tue, 09 Aug 2011 14:21:58 +0800 </span><br><span class="line">To: root </span><br><span class="line">Subject: testing queue </span><br><span class="line">User-Agent: Heirloom mailx 12.4 7/29/08 </span><br><span class="line">MIME-Version: 1.0 </span><br><span class="line">Content-Type: text/plain; charset=us-ascii </span><br><span class="line">Content-Transfer-Encoding: 7bit </span><br><span class="line"><span class="built_in">test</span></span><br><span class="line">*** HEADER EXTRACTED 5CFBB21DB *** </span><br><span class="line">*** MESSAGE FILE END 5CFBB21DB ***</span><br></pre></td></tr></table></figure>
+
+<p>如此一来你就知道目前我们的MTA主机有多少未送出的信件，还有未送出信件的内容你也可以追踪的到了！很不错，对吧！不过，如果你想要我们的postfix立刻尝试将这些在队列当中的信件寄出去，那又该如何是好？你有几个作法啦，可以重新启动postfix，也可以透过postfix的动作来处理，例如： </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># /etc/init.d/postfix restart </span></span><br><span class="line">[root@www ~]<span class="comment"># postfix flush</span></span><br></pre></td></tr></table></figure>
+
+<p>鸟哥个人比较建议使用postfixflush啰！自行参考看看先！^_^！接下来，让我们先来处理一下收信的MRA服务器，搞定后再来处理客户端的用户接口吧！</p>
+<h5 id="防火墙设置"><a href="#防火墙设置" class="headerlink" title="防火墙设置"></a>防火墙设置</h5><p>因为整个MTA主要是透过SMTP(port25)进行信件传送的任务，因此，针对postfix来说，只要放行port25即可呦！修改一下iptables.rule吧！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /usr/local/virus/iptables/iptables.rule</span></span><br><span class="line"><span class="comment"># 找到底下这一行，并且将它批注拿掉！ </span></span><br><span class="line">iptables -A INPUT -p TCP -i <span class="variable">$EXTIF</span> --dport 25 --sport 1024:65534 -j ACCEPT </span><br><span class="line">[root@www ~]<span class="comment"># /usr/local/virus/iptables/iptables.rule</span></span><br></pre></td></tr></table></figure>
+
+<p>这样就放行整个 Internet 对您服务器的 port 25 的读取啰！简单！搞定！</p>
+<h4 id="MRA-服务器：-dovecot-设定"><a href="#MRA-服务器：-dovecot-设定" class="headerlink" title="MRA 服务器： dovecot 设定"></a>MRA 服务器： dovecot 设定</h4><p>除非你想要架设webmail在你的MTA上头，否则，你的MTA收下了信件，你总得连上MTA去收信吧？那么收信要用的是哪个通讯协议？就是22.1.4里面谈到的pop3以及imap啰！这就是所谓的MRA服务器！我们的CentOS6.x使用的是dovecot这个软件来达成MRA的相关通讯协议的！但由于pop3/imap还有数据加密的版本，底下我们就依据是否加密(SSL)来设定dovecot吧！</p>
+<h5 id="基础的-POP3-IMAP-设定"><a href="#基础的-POP3-IMAP-设定" class="headerlink" title="基础的 POP3/IMAP 设定"></a>基础的 POP3/IMAP 设定</h5><p>启动单纯的pop3/imap是很简单的啦，你得要先确定已经安装了dovecot这个软件。而这个软件的配置文件只有一个，就是/etc/dovecot/dovecot.conf。我们仅要启动pop3/imap而已，所以可以这样设定即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># yum install dovecot </span></span><br><span class="line">[root@www ~]<span class="comment"># vim /etc/dovecot/dovecot.conf </span></span><br><span class="line"><span class="comment"># 找到底下这一行，大约是在第 25 行左右的地方，复制新增一行内容如下： </span></span><br><span class="line"><span class="comment">#protocols = imap pop3 lmtp </span></span><br><span class="line">protocols = imap pop3 </span><br><span class="line">[root@www ~]<span class="comment"># vim /etc/dovecot/conf.d/10-ssl.conf </span></span><br><span class="line">ssl = no &lt;==将第 6 行改成这样！</span><br></pre></td></tr></table></figure>
+
+<p>改完之后你就可以启动dovecot啰！并且检查看看port110/143(pop3/imap)有没有启动啊？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># /etc/init.d/dovecot start </span></span><br><span class="line">[root@www ~]<span class="comment"># chkconfig dovecot on </span></span><br><span class="line">[root@www ~]<span class="comment"># netstat -tlnp | grep dovecot </span></span><br><span class="line">Proto Recv-Q Send-Q Local Address Foreign Address State PID/Program name </span><br><span class="line">tcp 0 0 :::110 :::* LISTEN </span><br><span class="line">14343/dovecot </span><br><span class="line">tcp 0 0 :::143 :::* LISTEN </span><br><span class="line">14343/dovecot</span><br></pre></td></tr></table></figure>
+
+<p>耶！搞定！这样就可以提供使用者来收信件啦！真是不错啊！不过记得喔，这里只提供基本的明码pop3/imap传输而已，如果想要启动其他如pop3s(传输加密机制)协议时，就得要额外的设定啰！</p>
+<h5 id="加密的-POP3s-IMAPs-设定"><a href="#加密的-POP3s-IMAPs-设定" class="headerlink" title="加密的 POP3s/IMAPs 设定"></a>加密的 POP3s/IMAPs 设定</h5><p>如果担心数据在传输过程会被窃取，或者是你的登入信息(账号与密码)在使用pop3/imap时会被窃听，那么这个pop3s/imaps就显的重要啦！与之前的Apache相似的，其实我们都是透过openssl这个软件提供的SSL加密机制来进行数据的加密传输。方式很简单呢！预设的情况下，CentOS已经提供了SSL凭证范例文件给我们使用了。如果你一点都不想要使用预设的凭证，那么我们就来自己建一个吧！</p>
+<h6 id="建立凭证："><a href="#建立凭证：" class="headerlink" title="建立凭证："></a>建立凭证：</h6><p>到系统提供的/etc/pki/tls/certs/目录下建立所需要的pem凭证档：建立凭证：到系统提供的/etc/pki/tls/certs/目录下建立所需要的pem凭证档：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># cd /etc/pki/tls/certs/ </span></span><br><span class="line">[root@www certs]<span class="comment"># make vbirddovecot.pem </span></span><br><span class="line">....(前面省略).... </span><br><span class="line">Country Name (2 letter code) [XX]:TW </span><br><span class="line">State or Province Name (full name) []:Taiwan </span><br><span class="line">Locality Name (eg, city) [Default City]:Tainan </span><br><span class="line">Organization Name (eg, company) [Default Company Ltd]:KSU </span><br><span class="line">Organizational Unit Name (eg, section) []:DIC Common Name (eg, your name or your server<span class="string">&#x27;s hostname) []:www.centos.vbird </span></span><br><span class="line"><span class="string">Email Address []:dmtsai@www.centos.vbird</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="因为担心-SELinux-的问题，所以建议将-pem-档案放置到系统默认的目录去较佳！"><a href="#因为担心-SELinux-的问题，所以建议将-pem-档案放置到系统默认的目录去较佳！" class="headerlink" title="因为担心 SELinux 的问题，所以建议将 pem 档案放置到系统默认的目录去较佳！"></a>因为担心 SELinux 的问题，所以建议将 pem 档案放置到系统默认的目录去较佳！</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@www certs]<span class="comment"># mv vbirddovecot.pem ../../dovecot/ </span></span><br><span class="line">[root@www certs]<span class="comment"># restorecon -Rv ../../dovecot</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="开始处理-dovecot-conf，只要-pop3s-imaps-不要明码传输的咯！"><a href="#开始处理-dovecot-conf，只要-pop3s-imaps-不要明码传输的咯！" class="headerlink" title="开始处理 dovecot.conf，只要 pop3s, imaps 不要明码传输的咯！"></a>开始处理 dovecot.conf，只要 pop3s, imaps 不要明码传输的咯！</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@www certs]<span class="comment"># vim /etc/dovecot/conf.d/10-auth.conf </span></span><br><span class="line">disable_plaintext_auth = yes &lt;==第 9 行改成这样！取消批注！ </span><br><span class="line">[root@www certs]<span class="comment"># vim /etc/dovecot/conf.d/10-ssl.conf </span></span><br><span class="line">ssl = required &lt;==第 6 行改成这样 </span><br><span class="line">ssl_cert = &lt;/etc/pki/dovecot/vbirddovecot.pem &lt;==12, 13 行变这样 </span><br><span class="line">ssl_key = &lt;/etc/pki/dovecot/vbirddovecot.pem </span><br><span class="line">[root@www certs]<span class="comment"># vim /etc/dovecot/conf.d/10-master.conf </span></span><br><span class="line">inet_listener imap &#123; </span><br><span class="line">port = 0 &lt;== 15 行改成这样 </span><br><span class="line">&#125;</span><br><span class="line">inet_listener pop3 &#123;</span><br><span class="line">port = 0 &lt;== 36 行改成这样 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="处理额外的-mail-location-设定值！很重要！否则网络收信会失败："><a href="#处理额外的-mail-location-设定值！很重要！否则网络收信会失败：" class="headerlink" title="处理额外的 mail_location 设定值！很重要！否则网络收信会失败："></a>处理额外的 mail_location 设定值！很重要！否则网络收信会失败：</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@www certs]<span class="comment"># vim /etc/dovecot/conf.d/10-mail.conf </span></span><br><span class="line">mail_location = mbox:~/mail:INBOX=/var/mail/%u &lt;==第 30 行改这样</span><br></pre></td></tr></table></figure>
+
+<h6 id="重新启动-dovecot-并且观察-port-的变化："><a href="#重新启动-dovecot-并且观察-port-的变化：" class="headerlink" title="重新启动 dovecot 并且观察 port 的变化："></a>重新启动 dovecot 并且观察 port 的变化：</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@www certs]<span class="comment"># /etc/init.d/dovecot restart </span></span><br><span class="line">[root@www certs]<span class="comment"># netstat -tlnp | grep dovecot </span></span><br><span class="line">Proto Recv-Q Send-Q Local Address Foreign Address State PID/Program name </span><br><span class="line">tcp 0 0 :::993 :::* LISTEN 14527/dovecot </span><br><span class="line">tcp 0 0 :::995 :::* LISTEN 14527/dovecot</span><br></pre></td></tr></table></figure>
+
+<p>最终你看到的993是imaps而995则是pop3s啰！这样一来，你收信的时候，输入的账号密码就不怕被窃听了！反正是加密后的资料啰！很简单吧！</p>
+<h5 id="防火墙设置-1"><a href="#防火墙设置-1" class="headerlink" title="防火墙设置"></a>防火墙设置</h5><p>因为上面的练习中，我们将pop3/imap关闭，转而打开pop3s/imaps了，因此防火墙启动的端口会不一样！请依据您实际的案例来设定你所需要的防火墙才好。我们这里主要是开放993,995两个端口呦！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]<span class="comment"># vim /usr/local/virus/iptables/iptables.rule </span></span><br><span class="line"><span class="comment"># 大约在 180 行左右，新增底下两行去！ </span></span><br><span class="line">iptables -A INPUT -p TCP -i <span class="variable">$EXTIF</span> --dport 993 --sport 1024:65534 -j ACCEPT </span><br><span class="line">iptables -A INPUT -p TCP -i <span class="variable">$EXTIF</span> --dport 995 --sport 1024:65534 -j ACCEPT </span><br><span class="line">[root@www ~]<span class="comment"># /usr/local/virus/iptables/iptables.rule</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你的pop3/imap还是决定不加密的话，请将上面的993/995改成143/110即可！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">网络搭建竞赛组</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.hnswxx.cn/2021/11/13/mail-server-postfix/">https://www.hnswxx.cn/2021/11/13/mail-server-postfix/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.hnswxx.cn" target="_blank">河南省商务中等职业学校</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%B8%9F%E5%93%A5%E7%9A%84Linux%E7%A7%81%E6%88%BF%E8%8F%9C/">鸟哥的Linux私房菜</a><a class="post-meta__tags" href="/tags/postfix/">postfix</a><a class="post-meta__tags" href="/tags/%E9%82%AE%E4%BB%B6/">邮件</a></div><div class="post_share"><div class="social-share" data-image="https://z3.ax1x.com/2021/11/13/IyRoJe.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/11/15/dhcp-server/"><img class="prev-cover" src="https://z3.ax1x.com/2021/11/15/I2w5kQ.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">网络参数管控者 DHCP服务</div></div></a></div><div class="next-post pull-right"><a href="/2021/11/11/active-directory-domain-services-overview/"><img class="next-cover" src="https://z3.ax1x.com/2021/11/12/IBwfWF.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Active Directory 域服务概述</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/15/dhcp-server/" title="网络参数管控者 DHCP服务"><img class="cover" src="https://z3.ax1x.com/2021/11/15/I2w5kQ.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-15</div><div class="title">网络参数管控者 DHCP服务</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="cols"><div class="col"><div class="container"><div class="front avatarPanel"><div class="inner"><div class="player-title">网络搭建</div><div class="player-avatar"><img src="https://z3.ax1x.com/2021/11/13/IybhP1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div></div></div><div class="back attributesPanel"><div class="inner"><div class="player-lv">LV.3</div><div class="player-name">网络搭建竞赛组</div><div class="attributes-value"><div class="attributes-value-item"><a href="/archives/"><div class="attributes">文章</div><div class="value-bar"><div class="value-bar-fill" style="width:25.00%"><div class="value-bar-fill-in" style="background: rgba(89, 230, 54,0.6)"></div></div></div><span>25/100</span></a></div><div class="attributes-value-item"><a href="/tags/"><div class="attributes">标签</div><div class="value-bar"><div class="value-bar-fill" style="width:19.00%"><div class="value-bar-fill-in" style="background: rgba(224, 20, 20, 0.6)"></div></div></div><span>19/100</span></a></div><div class="attributes-value-item"><a href="/categories/"><div class="attributes">分类</div><div class="value-bar"><div class="value-bar-fill" style="width:2.00%"><div class="value-bar-fill-in" style="background: rgba(30, 97, 226, 0.6)"></div></div></div><span>2/100</span></a></div></div></div></div></div></div><div class="col"><div class="container"><div class="front descriptionPanel"><div class="inner"><div class="player_description"><b>劳动光荣<br>技能宝贵<br>德技并修<br>知行合一</b></div><div class="play-bottom"></div></div></div><div class="back buttonPanel"><div class="inner"><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://jq.qq.com/?_wv=1027&amp;k=wTQefzUT"><i class="fab fa-edge"></i><span>加入网络爱好者群聊</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="tencent://message/?uin=1692565761&amp;Site=&amp;Menu=yes" target="_blank" title="qq"><i class="iconfont icon-qq"></i></a><a class="social-icon" href="https://user.qzone.qq.com/1692565761/main" target="_blank" title="qzone"><i class="iconfont icon-qzone"></i></a><a class="social-icon" href="https://z3.ax1x.com/2021/11/15/I2Ulod.jpg" target="_blank" title="wechat"><i class="iconfont icon-wechat"></i></a><a class="social-icon" href="https://github.com/1692565761" target="_blank" title="github"><i class="iconfont icon-github"></i></a></div><div class="play-bottom"></div></div></div></div></div></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content"><a href="https://www.hnswxx.com/a/dangjianzhuanti/dangshijiaoyu/" target="_blank"><img width="100%" src="https://z3.ax1x.com/2021/11/13/IyHHNn.png" height="90"></a><a href="http://www.hnswxx.com/plus/list.php?tid=88" target="_blank"><img src="https://z3.ax1x.com/2021/11/13/IyHxuF.png" alt="img"  height="90" width="100%"></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%8A%9F%E8%83%BD%E4%B8%8E%E8%BF%90%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">邮件服务器的功能与运作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%9A%84%E5%8A%9F%E8%83%BD%E4%B8%8E%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">电子邮件的功能与问题</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%A4%B9%E5%B8%A6%E7%97%85%E6%AF%92%E7%9A%84%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">夹带病毒的电子邮件问题：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%80%AA%E5%AE%A2%E9%80%8F%E8%BF%87%E9%82%AE%E4%BB%B6%E7%A8%8B%E5%BA%8F%E5%85%A5%E4%BE%B5%EF%BC%9A"><span class="toc-number">1.1.2.</span> <span class="toc-text">怪客透过邮件程序入侵：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%B9%BF%E5%91%8A%E4%BF%A1%E4%B8%8E%E5%9E%83%E5%9C%BE%E4%BF%A1%E7%AD%89%EF%BC%9A"><span class="toc-number">1.1.3.</span> <span class="toc-text">广告信与垃圾信等：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E8%A2%AB%E5%A4%A7%E9%87%8F%E4%B8%8D%E6%98%8E%E4%BF%A1%E4%BB%B6%E5%A1%9E%E7%88%86%EF%BC%9A"><span class="toc-number">1.1.4.</span> <span class="toc-text">主机被大量不明信件塞爆：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%9C%9F%E5%AE%9E%E7%A4%BE%E4%BC%9A%E7%9A%84%E8%AE%A8%E5%8E%8C%E6%83%85%E4%BA%8B%EF%BC%9A"><span class="toc-number">1.1.5.</span> <span class="toc-text">真实社会的讨厌情事：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E4%B8%8D%E5%AE%9E%E7%9A%84%E4%BF%A1%E4%BB%B6%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">1.1.6.</span> <span class="toc-text">不实的信件内容：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Mail-server-%E4%B8%8E-DNS-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">1.2.</span> <span class="toc-text">Mail server 与 DNS 之间的关系</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%82%AE%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E7%BB%84%E4%BB%B6-MTA-MUA-MDA-%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.3.</span> <span class="toc-text">邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E9%82%AE%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E7%BB%84%E4%BB%B6-MTA-MUA-MDA-%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%8D%8F%E8%AE%AE-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">邮件传输所需要的组件 (MTA, MUA, MDA) 以及相关协议</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%80%85%E6%94%B6%E4%BF%A1%E6%97%B6%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%89%80%E6%8F%90%E4%BE%9B%E7%9A%84%E7%9B%B8%E5%85%B3%E5%8D%8F%E8%AE%AE%EF%BC%9A-MRA"><span class="toc-number">1.4.</span> <span class="toc-text">使用者收信时服务器端所提供的相关协议： MRA</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Relay-%E4%B8%8E%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7"><span class="toc-number">1.5.</span> <span class="toc-text">Relay 与认证机制的重要性</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E7%9A%84%E6%95%B0%E6%8D%AE%E5%86%85%E5%AE%B9"><span class="toc-number">1.6.</span> <span class="toc-text">电子邮件的数据内容</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MTA-%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9A-Postfix-%E5%9F%BA%E7%A1%80%E8%AE%BE%E5%AE%9A"><span class="toc-number">2.</span> <span class="toc-text">MTA 服务器： Postfix 基础设定</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Postfix-%E7%9A%84%E5%BC%80%E5%8F%91"><span class="toc-number">2.1.</span> <span class="toc-text">Postfix 的开发</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E8%BD%AF%E4%BB%B6%E4%B8%8E%E8%BD%AF%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">所需要的软件与软件结构</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E9%82%AE%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E8%AE%BE%E5%AE%9A%E6%A1%88%E4%BE%8B"><span class="toc-number">2.3.</span> <span class="toc-text">一个邮件服务器的设定案例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%A9-Postfix-%E5%8F%AF%E7%9B%91%E5%90%AC-Internet-%E6%9D%A5%E6%94%B6%E5%8F%91%E4%BF%A1%E4%BB%B6"><span class="toc-number">2.4.</span> <span class="toc-text">让 Postfix 可监听 Internet 来收发信件</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BF%A1%E4%BB%B6%E4%BC%A0%E9%80%81%E6%B5%81%E7%A8%8B%E4%B8%8E%E6%94%B6%E4%BF%A1%E3%80%81relay-%E7%AD%89%E9%87%8D%E8%A6%81%E8%A7%82%E5%BF%B5"><span class="toc-number">2.5.</span> <span class="toc-text">信件传送流程与收信、relay 等重要观念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BE%E5%AE%9A%E9%82%AE%E4%BB%B6%E4%B8%BB%E6%9C%BA%E6%9D%83%E9%99%90%E4%B8%8E%E8%BF%87%E6%BB%A4%E6%9C%BA%E5%88%B6-etc-postfix-access"><span class="toc-number">2.6.</span> <span class="toc-text">设定邮件主机权限与过滤机制 &#x2F;etc&#x2F;postfix&#x2F;access</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BE%E5%AE%9A%E9%82%AE%E4%BB%B6%E5%88%AB%E5%90%8D%EF%BC%9A-etc-aliases-forward"><span class="toc-number">2.7.</span> <span class="toc-text">设定邮件别名： &#x2F;etc&#x2F;aliases, ~&#x2F;.forward</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%9F%E7%9C%8B%E4%BF%A1%E4%BB%B6%E9%98%9F%E5%88%97%E4%BF%A1%E6%81%AF%EF%BC%9A-postqueue-mailq"><span class="toc-number">2.8.</span> <span class="toc-text">察看信件队列信息： postqueue, mailq</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.9.</span> <span class="toc-text">防火墙设置</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MRA-%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%9A-dovecot-%E8%AE%BE%E5%AE%9A"><span class="toc-number">3.</span> <span class="toc-text">MRA 服务器： dovecot 设定</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%9A%84-POP3-IMAP-%E8%AE%BE%E5%AE%9A"><span class="toc-number">3.1.</span> <span class="toc-text">基础的 POP3&#x2F;IMAP 设定</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E7%9A%84-POP3s-IMAPs-%E8%AE%BE%E5%AE%9A"><span class="toc-number">3.2.</span> <span class="toc-text">加密的 POP3s&#x2F;IMAPs 设定</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E5%87%AD%E8%AF%81%EF%BC%9A"><span class="toc-number">3.2.1.</span> <span class="toc-text">建立凭证：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%9B%A0%E4%B8%BA%E6%8B%85%E5%BF%83-SELinux-%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%8C%E6%89%80%E4%BB%A5%E5%BB%BA%E8%AE%AE%E5%B0%86-pem-%E6%A1%A3%E6%A1%88%E6%94%BE%E7%BD%AE%E5%88%B0%E7%B3%BB%E7%BB%9F%E9%BB%98%E8%AE%A4%E7%9A%84%E7%9B%AE%E5%BD%95%E5%8E%BB%E8%BE%83%E4%BD%B3%EF%BC%81"><span class="toc-number">3.2.2.</span> <span class="toc-text">因为担心 SELinux 的问题，所以建议将 pem 档案放置到系统默认的目录去较佳！</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E5%A4%84%E7%90%86-dovecot-conf%EF%BC%8C%E5%8F%AA%E8%A6%81-pop3s-imaps-%E4%B8%8D%E8%A6%81%E6%98%8E%E7%A0%81%E4%BC%A0%E8%BE%93%E7%9A%84%E5%92%AF%EF%BC%81"><span class="toc-number">3.2.3.</span> <span class="toc-text">开始处理 dovecot.conf，只要 pop3s, imaps 不要明码传输的咯！</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E9%A2%9D%E5%A4%96%E7%9A%84-mail-location-%E8%AE%BE%E5%AE%9A%E5%80%BC%EF%BC%81%E5%BE%88%E9%87%8D%E8%A6%81%EF%BC%81%E5%90%A6%E5%88%99%E7%BD%91%E7%BB%9C%E6%94%B6%E4%BF%A1%E4%BC%9A%E5%A4%B1%E8%B4%A5%EF%BC%9A"><span class="toc-number">3.2.4.</span> <span class="toc-text">处理额外的 mail_location 设定值！很重要！否则网络收信会失败：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E5%90%AF%E5%8A%A8-dovecot-%E5%B9%B6%E4%B8%94%E8%A7%82%E5%AF%9F-port-%E7%9A%84%E5%8F%98%E5%8C%96%EF%BC%9A"><span class="toc-number">3.2.5.</span> <span class="toc-text">重新启动 dovecot 并且观察 port 的变化：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E8%AE%BE%E7%BD%AE-1"><span class="toc-number">3.3.</span> <span class="toc-text">防火墙设置</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/12/15/Ipadair_downgrade/" title="记录一次IPAD  air降级ios10.3.3的全部过程"><img src="https://s4.ax1x.com/2021/12/15/ozS9B9.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="记录一次IPAD  air降级ios10.3.3的全部过程"/></a><div class="content"><a class="title" href="/2021/12/15/Ipadair_downgrade/" title="记录一次IPAD  air降级ios10.3.3的全部过程">记录一次IPAD  air降级ios10.3.3的全部过程</a><time datetime="2021-12-14T16:51:24.000Z" title="发表于 2021-12-15 00:51:24">2021-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/11/ldap-basic-configuration/" title="ldap基础配置与案例"><img src="https://s4.ax1x.com/2021/12/11/o7qMIx.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ldap基础配置与案例"/></a><div class="content"><a class="title" href="/2021/12/11/ldap-basic-configuration/" title="ldap基础配置与案例">ldap基础配置与案例</a><time datetime="2021-12-11T12:35:16.000Z" title="发表于 2021-12-11 20:35:16">2021-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/11/nic-teaming/" title="掌握Windows Server 2012 网卡聚合（NIC Teaming）"><img src="https://s1.ax1x.com/2021/12/11/oTpAiR.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="掌握Windows Server 2012 网卡聚合（NIC Teaming）"/></a><div class="content"><a class="title" href="/2021/12/11/nic-teaming/" title="掌握Windows Server 2012 网卡聚合（NIC Teaming）">掌握Windows Server 2012 网卡聚合（NIC Teaming）</a><time datetime="2021-12-11T01:08:37.000Z" title="发表于 2021-12-11 09:08:37">2021-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/10/centos8-gateway-server/" title="centos8网关服务器（防火墙的nat转换）"><img src="https://s1.ax1x.com/2021/12/10/oImbp4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="centos8网关服务器（防火墙的nat转换）"/></a><div class="content"><a class="title" href="/2021/12/10/centos8-gateway-server/" title="centos8网关服务器（防火墙的nat转换）">centos8网关服务器（防火墙的nat转换）</a><time datetime="2021-12-10T07:53:39.000Z" title="发表于 2021-12-10 15:53:39">2021-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/10/mariadb-master-slave-replication/" title="MariaDB 主从复制"><img src="https://s1.ax1x.com/2021/12/10/o4qZfH.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MariaDB 主从复制"/></a><div class="content"><a class="title" href="/2021/12/10/mariadb-master-slave-replication/" title="MariaDB 主从复制">MariaDB 主从复制</a><time datetime="2021-12-10T00:44:38.000Z" title="发表于 2021-12-10 08:44:38">2021-12-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By 网络搭建竞赛组</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a style="margin-inline:5px"target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为 Hexo" alt="HEXO"></a><a style="margin-inline:5px"target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用 Butterfly" alt="Butterfly"></a><a style="margin-inline:5px"target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用 Jsdelivr 为静态资源提供CDN加速" alt="Jsdelivr"></a><a style="margin-inline:5px"target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-vercel-d021d6?style=flat&logo=vercel" title="本站项目由 vercel 托管" alt="vercel"></a><a style="margin-inline:5px"target="_blank"href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" alt="img" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script async src="//at.alicdn.com/t/font_2264842_3izu8i5eoc2.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="劳动光荣,技能宝贵,创造伟大,德技并修,知行合一" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start -->
+  <script data-pjax src="https://cdn.jsdelivr.net/gh/Zfour/hexo-github-calendar@1.16/hexo_githubcalendar.js"></script>
+  <script data-pjax>
+        function GithubCalendarConfig(){
+            var git_githubapiurl ="https://python-github-calendar-api.vercel.app/api?1692565761";
+            var git_color =['#ebedf0', '#fdcdec', '#fc9bd9', '#fa6ac5', '#f838b2', '#f5089f', '#c4067e', '#92055e', '#540336', '#48022f', '#30021f'];
+            var git_user ="1692565761";
+            var parent_div_git = document.getElementById('recent-posts');
+            var git_div_html = '<div class="recent-post-item" style="width:100%;height:auto;padding:10px;"><div id="github_loading" style="width:10%;height:100%;margin:0 auto;display: block"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform></path></svg></div><div id="github_container"></div></div>';
+            if(parent_div_git && location.pathname =='/'){
+                console.log('已挂载github calendar')
+                // parent_div_git.innerHTML=git_div_html+parent_div_git.innerHTML // 无报错，但不影响使用(支持pjax跳转)
+                parent_div_git.insertAdjacentHTML("afterbegin",git_div_html) // 有报错，但不影响使用(支持pjax跳转)
+            };
+            GithubCalendar(git_githubapiurl,git_color,git_user)
+        }
+        if(document.getElementById('recent-posts')){
+            GithubCalendarConfig()
+        }
+    </script>
+    <style>#github_container{min-height:280px}@media screen and (max-width:650px) {#github_container{background-image:;min-height:0px}}</style>
+    <style>undefined</style><!-- hexo injector body_end end --></body></html>
