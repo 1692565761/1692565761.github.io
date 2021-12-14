@@ -6,7 +6,7 @@
   <link href="https://www.hnswxx.cn/atom.xml" rel="self"/>
   
   <link href="https://www.hnswxx.cn/"/>
-  <updated>2021-12-11T12:57:19.556Z</updated>
+  <updated>2021-12-14T16:57:02.000Z</updated>
   <id>https://www.hnswxx.cn/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记录一次IPAD  air降级ios10.3.3的全部过程</title>
+    <link href="https://www.hnswxx.cn/2021/12/15/Ipadair_downgrade/"/>
+    <id>https://www.hnswxx.cn/2021/12/15/Ipadair_downgrade/</id>
+    <published>2021-12-14T16:51:24.000Z</published>
+    <updated>2021-12-14T16:57:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>我在闲鱼上淘到一个350块钱的IPAD AIR，是一台14年的老机器。成色从外观上看还算新，只有屏幕右上角有明显的磕碰，其他并没有明显的损坏，爱思助手上的具体参数是这样的。</p><p><a href="https://imgtu.com/i/oxgqFP"><img src="https://s4.ax1x.com/2021/12/14/oxgqFP.png" alt="oxgqFP.png"></a></p><p>到货了以后发现后置摄像头有损坏，无法正常使用。商家又给我退了30块钱，最终这个ipad air我拿到手花了320块钱。</p><p>这是我第一次使用IOS系统，虽然这台IPAD 还没有更新最新的IOS系统12.5.5，但是我在使用上也是奇卡无比，感觉不能流程的玩耍了，于是乎在我经过一段时间的百度以后，我想到了给我的IPAD 降级。</p><p>IPAD 外观照片</p><p>（正面照）</p><p><a href="https://imgtu.com/i/ox43sU"><img src="https://s4.ax1x.com/2021/12/14/ox43sU.jpg" alt="ox43sU.jpg"></a></p><p>（反面照）反面具体有一些小磨损，但是并不碍事，套上一个壳子就好了。</p><p><a href="https://imgtu.com/i/ox59w4"><img src="https://s4.ax1x.com/2021/12/14/ox59w4.md.jpg" alt="ox59w4.md.jpg"></a></p><p>（从拼多多定制的IPAD壳子）</p><p><a href="https://imgtu.com/i/ox5KTH"><img src="https://s4.ax1x.com/2021/12/14/ox5KTH.md.png" alt="ox5KTH.md.png"></a></p><h4 id="经过"><a href="#经过" class="headerlink" title="经过"></a>经过</h4><blockquote><p><strong>首先这是一个痛苦的过程</strong></p></blockquote><p>据我在b站和百度的找寻结果中看，如果你想降级，首先你得有一个mac系统的电脑或者你自己装一个黑苹果，使用vmware虚拟机还不行。</p><p>这就很为难我了，我从哪里找一台mac系统的电脑呢？于是我准备给我的台式机刷一个黑苹果，但是我打开大师一看，卧槽？硬盘竟然是三星的pm981a，因为我在国光的博客上看到三星pm981a装黑苹果比较坑，我一个第一次接触mac的人我肯定是果断放弃了，于是乎我就在自己的笔记本上折腾了起来，我的笔记本是老版拯救者r720 配置是i57300hq 12g内存 128固态+1t机械 ，然后我研究了一天终于把我的黑苹果装上去了，具体详细操作我就不写了因为我也没太整明白，反正就是装上了，最后还把我的Windows搞没了，简直把我气死，装的是黑果小兵官网上的macOS Mojave 10.14.6 </p><p>[【黑果小兵】macOS Mojave 10.14.6 18G103 正式版 with Clover 5091原版镜像<a href="https://blog.daliansky.net/macOS-Mojave-10.14.6-18G87-Release-version-with-Clover-5033-original-image.html">双EFI双平台终极版] | 黑果小兵的部落阁 (daliansky.net)</a></p><p><a href="https://imgtu.com/i/oxo1QP"><img src="https://s4.ax1x.com/2021/12/14/oxo1QP.png" alt="oxo1QP.png"></a></p><p>（安装完以后的拯救者r720）</p><p><a href="https://imgtu.com/i/oxoDyV"><img src="https://s4.ax1x.com/2021/12/14/oxoDyV.jpg" alt="oxoDyV.jpg"></a></p><p>（结果Windows 进不去了 我太难了）</p><p><a href="https://imgtu.com/i/oxoOfA"><img src="https://s4.ax1x.com/2021/12/14/oxoOfA.png" alt="oxoOfA.png"></a></p><p><strong>开始正题，此次环境介绍</strong></p><ul><li><p>硬件</p><ul><li>笔记本 联想拯救者r720 硬件配置（i5 7300hq 12g内存 128g固态+1t机械）</li><li>iPad air  产品类型 iPad4,1 (A1474)  硬件配置 （Apple A7 16G）</li></ul></li><li><p>系统</p><ul><li>笔记本 macOS Mojave 10.14.6</li><li>iPad IOS 12.5.4</li></ul></li><li><p>软件（以下软件均装在电脑下）</p></li></ul><table><thead><tr><th></th><th>爱思助手</th><th>vieux</th><th>python</th></tr></thead><tbody><tr><td>版本</td><td>无所谓</td><td>无所谓</td><td>3.5</td></tr><tr><td>链接</td><td><a href="https://www.i4.cn/">爱思助手官网</a></td><td><a href="https://github.com/MatthewPierson/Vieux">vieux</a></td><td><a href="https://www.python.org/ftp/python/3.5.0/python-3.5.0-macosx10.6.pkg">installer</a></td></tr></tbody></table><p><strong>降级步骤（主要是mac的操作）</strong></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">首先下载MathewPierso大佬的vieux (https://github.com/MatthewPierson/Vieux)</span><br><span class="line"></span><br><span class="line">在mac的桌面上运行 git clone https://github.com/MatthewPierson/Vieux.git</span><br><span class="line">PS: 如果没有git 可以使用appstore 安装一个git</span><br><span class="line"></span><br><span class="line">从python的官网上下载python3.5！并且进行安装</span><br><span class="line">https://www.python.org/ftp/python/3.5.0/python-3.5.0-macosx10.6.pkg</span><br><span class="line">PS: 只能是3.5其他版本好像不行。</span><br><span class="line"></span><br><span class="line">从爱思官网下载最新版的爱思助手，并且安装</span><br><span class="line">从爱思助手上下载iPad对应的10.3.3的系统固件 </span><br><span class="line">PS: 下载这个14G60的 我用14G58的试了试好像不行</span><br></pre></td></tr></table></figure><p><a href="https://imgtu.com/i/oxLLtS"><img src="https://s4.ax1x.com/2021/12/15/oxLLtS.png" alt="oxLLtS.png"></a></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载好固件以后把固件放到vieux的文件夹里</span><br><span class="line">vieux 下载好里面会有这些文件</span><br></pre></td></tr></table></figure><p><a href="https://imgtu.com/i/oxOltO"><img src="https://s4.ax1x.com/2021/12/15/oxOltO.png" alt="oxOltO.png"></a></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这些准备好以后，把设备进入DFU模式</span><br><span class="line">PS：将设备进入DFU模式。DFU模式不是恢复模式！DFU模式不是恢复模式！DFU模式不是恢复模式！DFU模式设备应当是完全黑屏的，如果是有iTunes图标与线，那就是恢复模式！这一步我个人认为是整个过程中最难的一步，因为经常会出现进入不了DFU模式的情况，可能浪费大把时间。</span><br></pre></td></tr></table></figure><p>摸索之下，进入DFU的最好方法是：</p><ul><li>在设备插入电脑的情况下关机。</li><li>确认关机后，<strong>同时按住电源键与Home键</strong>，<strong>闭上眼睛</strong>，<strong>默数10秒</strong>，<strong>松开电源键</strong>。</li><li>在电脑上打开的爱思助手里确认设备进入了DFU模式。使用这种方法进入DFU的成功率接近100%。</li></ul><p>以下是我进入DFU模式的截图</p><p><a href="https://imgtu.com/i/oxXzd0"><img src="https://s4.ax1x.com/2021/12/15/oxXzd0.png" alt="oxXzd0.png"></a></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">在终端执行</span><br><span class="line">pip3 install -r &quot;requirements.txt&quot;</span><br><span class="line">来我们会用到的依赖</span><br><span class="line">PS:安装时确认没有任何红色的报错以后</span><br><span class="line">正式开始降级！！！</span><br><span class="line">在终端执行</span><br><span class="line">python3 vieux -i 跟上固件文件</span><br></pre></td></tr></table></figure><p><a href="https://imgtu.com/i/oxjLtK"><img src="https://s4.ax1x.com/2021/12/15/oxjLtK.jpg" alt="oxjLtK.jpg"></a></p><p>然后就会自动的去降级，但是不一定百分百成功，网上是这么说的</p><p><a href="https://imgtu.com/i/oxvaH1"><img src="https://s4.ax1x.com/2021/12/15/oxvaH1.png" alt="oxvaH1.png"></a></p><h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><p>可能是因为我运气比较好吧，我第二次就降级成功了，以下是我降级时候的照片</p><p><a href="https://imgtu.com/i/oxvRHI"><img src="https://s4.ax1x.com/2021/12/15/oxvRHI.png" alt="oxvRHI.png"></a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    
+    <category term="瞎搞机" scheme="https://www.hnswxx.cn/tags/%E7%9E%8E%E6%90%9E%E6%9C%BA/"/>
+    
+  </entry>
   
   <entry>
     <title>ldap基础配置与案例</title>
@@ -497,28 +519,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>数字签名是什么？</title>
-    <link href="https://www.hnswxx.cn/2021/11/11/what-is-a-digital-signature/"/>
-    <id>https://www.hnswxx.cn/2021/11/11/what-is-a-digital-signature/</id>
-    <published>2021-11-10T23:29:08.000Z</published>
-    <updated>2021-11-11T12:38:07.165Z</updated>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>鲍勃有两把钥匙，一把是公钥，另一把是私钥。<br><a href="https://imgtu.com/i/I0Nuzn"><img src="https://z3.ax1x.com/2021/11/11/I0Nuzn.png" alt="I0Nuzn.png"></a></p><p>鲍勃把公钥送给他的朋友们—-帕蒂、道格、苏珊—-每人一把。<br><a href="https://imgtu.com/i/I0NYi4"><img src="https://z3.ax1x.com/2021/11/11/I0NYi4.png" alt="I0NYi4.png"></a></p><p>苏珊要给鲍勃写一封保密的信。她写完后用鲍勃的公钥加密，就可以达到保密的效果。<br><a href="https://imgtu.com/i/I0NdQ1"><img src="https://z3.ax1x.com/2021/11/11/I0NdQ1.png" alt="I0NdQ1.png"></a></p><p>鲍勃收信后，用私钥解密，就看到了信件内容。这里要强调的是，只要鲍勃的私钥不泄露，这封信就是安全的，即使落在别人手里，也无法解密。<br><a href="https://imgtu.com/i/I0UKte"><img src="https://z3.ax1x.com/2021/11/11/I0UKte.png" alt="I0UKte.png"></a></p><p>鲍勃给苏珊回信，决定采用”数字签名”。他写完后先用Hash函数，生成信件的摘要（digest）。<br><a href="https://imgtu.com/i/I0U36I"><img src="https://z3.ax1x.com/2021/11/11/I0U36I.png" alt="I0U36I.png"></a></p><p>然后，鲍勃使用私钥，对这个摘要加密，生成”数字签名”（signature）。<br><a href="https://imgtu.com/i/I0UY0f"><img src="https://z3.ax1x.com/2021/11/11/I0UY0f.png" alt="I0UY0f.png"></a></p><p>鲍勃将这个签名，附在信件下面，一起发给苏珊。<br><a href="https://imgtu.com/i/I0Uatg"><img src="https://z3.ax1x.com/2021/11/11/I0Uatg.png" alt="I0Uatg.png"></a></p><p>苏珊收信后，取下数字签名，用鲍勃的公钥解密，得到信件的摘要。由此证明，这封信确实是鲍勃发出的。<br><a href="https://imgtu.com/i/I0UB1s"><img src="https://z3.ax1x.com/2021/11/11/I0UB1s.png" alt="I0UB1s.png"></a></p><p>苏珊再对信件本身使用Hash函数，将得到的结果，与上一步得到的摘要进行对比。如果两者一致，就证明这封信未被修改过。<br><a href="https://imgtu.com/i/I0Uyn0"><img src="https://z3.ax1x.com/2021/11/11/I0Uyn0.png" alt="I0Uyn0.png"></a></p><p>复杂的情况出现了。道格想欺骗苏珊，他偷偷使用了苏珊的电脑，用自己的公钥换走了鲍勃的公钥。此时，苏珊实际拥有的是道格的公钥，但是还以为这是鲍勃的公钥。因此，道格就可以冒充鲍勃，用自己的私钥做成”数字签名”，写信给苏珊，让苏珊用假的鲍勃公钥进行解密。<br><a href="https://imgtu.com/i/I0U2AU"><img src="https://z3.ax1x.com/2021/11/11/I0U2AU.png" alt="I0U2AU.png"></a></p><p>后来，苏珊感觉不对劲，发现自己无法确定公钥是否真的属于鲍勃。她想到了一个办法，要求鲍勃去找”证书中心”（certificate authority，简称CA），为公钥做认证。证书中心用自己的私钥，对鲍勃的公钥和一些相关信息一起加密，生成”数字证书”（Digital Certificate）。<br><a href="https://imgtu.com/i/I0URNF"><img src="https://z3.ax1x.com/2021/11/11/I0URNF.png" alt="I0URNF.png"></a></p><p>鲍勃拿到数字证书以后，就可以放心了。以后再给苏珊写信，只要在签名的同时，再附上数字证书就行了。<br><a href="https://imgtu.com/i/I0Uh9J"><img src="https://z3.ax1x.com/2021/11/11/I0Uh9J.png" alt="I0Uh9J.png"></a></p><p>苏珊收信后，用CA的公钥解开数字证书，就可以拿到鲍勃真实的公钥了，然后就能证明”数字签名”是否真的是鲍勃签的。<br><a href="https://imgtu.com/i/I0UHHK"><img src="https://z3.ax1x.com/2021/11/11/I0UHHK.png" alt="I0UHHK.png"></a></p><p>下面，我们看一个应用”数字证书”的实例：https协议。这个协议主要用于网页加密。<br><a href="https://imgtu.com/i/I0UzjI"><img src="https://z3.ax1x.com/2021/11/11/I0UzjI.png" alt="I0UzjI.png"></a></p><p>首先，客户端向服务器发出加密请求。<br><a href="https://imgtu.com/i/I0aCHf"><img src="https://z3.ax1x.com/2021/11/11/I0aCHf.png" alt="I0aCHf.png"></a></p><p>服务器用自己的私钥加密网页以后，连同本身的数字证书，一起发送给客户端。<br><a href="https://imgtu.com/i/I0aECQ"><img src="https://z3.ax1x.com/2021/11/11/I0aECQ.png" alt="I0aECQ.png"></a></p><p>客户端（浏览器）的”证书管理器”，有”受信任的根证书颁发机构”列表。客户端会根据这张列表，查看解开数字证书的公钥是否在列表之内。<br><a href="https://imgtu.com/i/I0anuq"><img src="https://z3.ax1x.com/2021/11/11/I0anuq.png" alt="I0anuq.png"></a></p><p>如果数字证书记载的网址，与你正在浏览的网址不一致，就说明这张证书可能被冒用，浏览器会发出警告。<br><a href="https://imgtu.com/i/I0auD0"><img src="https://z3.ax1x.com/2021/11/11/I0auD0.png" alt="I0auD0.png"></a></p><p>如果这张数字证书不是由受信任的机构颁发的，浏览器会发出另一种警告。<br><a href="https://imgtu.com/i/I0a6xA"><img src="https://z3.ax1x.com/2021/11/11/I0a6xA.png" alt="I0a6xA.png"></a></p><p>如果数字证书是可靠的，客户端就可以使用证书中的服务器公钥，对信息进行加密，然后与服务器交换加密信息。<br><a href="https://imgtu.com/i/I0agKI"><img src="https://z3.ax1x.com/2021/11/11/I0agKI.png" alt="I0agKI.png"></a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;/assets/css/APlayer.min.css&quot;&gt;&lt;script src=&quot;/assets/js/APlayer.min.js&quot; cla</summary>
-      
-    
-    
-    
-    
-    <category term="证书" scheme="https://www.hnswxx.cn/tags/%E8%AF%81%E4%B9%A6/"/>
     
   </entry>
   
