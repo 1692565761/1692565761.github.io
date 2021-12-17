@@ -11,18 +11,8 @@
         <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>PHP版本分为Non Thread Safe和Thread Safe，Non Thread Safe是指非线程安全，Thread Safe是指线程安全，区别是什么？如何选择？</p><p><a href="https://imgtu.com/i/TiLPbQ"><img src="https://s4.ax1x.com/2021/12/17/TiLPbQ.png" alt="TiLPbQ.png"></a></p><p><strong>Non Thread Safe和Thread Safe的区别</strong></p><ul><li>ts(Thread-Safety)即线程安全，多线程访问时，采用了加锁机制，当一个线程访问该类的某个数据时，进行保护，其他线程不能进行访问直到该线程读取完，其他线程才可使用。不会出现数据不一致或者数据污染php以ISAPI方式加载的时候选择这个版本.，php以ISAPI方式加载的时候选择这个版本.</li><li>nts(None-Thread Safe)即非线程安全，就是不提供数据访问保护，有可能出现多个线程先后更改数据造成所得到的是 脏数据php以fast cgi方式运行的时候选择这个版本，具有更好的性能；</li><li>ISAPI(Internet Server Application Programming Interface), 通常是指被http服务器所加载，以服务器的模块形式运行，由微 软提出，故只能在win平台上运行，例如win下的apache,iis[据说用fast cgi 方式工作更稳定]，而linux上php 则以 Apache模块或者php-fpm的方式运行。</li><li>cgi(Common Gateway Interface):HTTP服务器与你的或其它机器上的程序进行“交谈”的一种工具,说白了，cig就是一种 后台语言，其可以和服务器之间进行通讯。此时的php是作为一个独立的程序运行的。特点就是耗费内存。</li><li>fast cgi.是一个常驻(long-live)型的CGI，它可以一直执行着，只要激活后，不会每次都要花费时间去fork.这种方式 是与语言无关的、可伸缩架构的CGI开放扩展，其主要行为是将CGI解释器进程保持在内存中并因此获得较 高的性能。</li></ul><p>ISAPI执行方式是以DLL动态库的形式使用，可以在被用户请求后执行，在处理完一个用户请求后不会马上消失，所以需要进行线程安全检查，这样来提高程序的执行效率，所以如果是以ISAPI来执行PHP，建议选择ThreadSafe版本。</p><p>而FastCGI执行方式是以单一线程来执行操作，所以不需要进行线程的安全检查，除去线程安全检查的防护反而可以提高执行效率，所以，如果是以FastCGI来执行PHP，建议选择NonThread Safe版本。</p><p>那么，如何查看当前PHP到底是Non Thread Safe（非线程安全）还是Thread Safe（线程安全）？</p><p>很简单，打印phpinfo()，查看PHP版本信息中的Thread Safety选项，此选项为enable，就是Thread Safe（线程安全）版本，否则就是None Thread Safe（非线程安全）版本。</p>]]></content>
       
       
-      <categories>
-          
-          <category> Windows </category>
-          
-      </categories>
-      
       
         <tags>
-            
-            <tag> WindowServer2019 </tag>
-            
-            <tag> IIS </tag>
             
             <tag> PHP </tag>
             
