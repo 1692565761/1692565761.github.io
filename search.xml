@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>WindowsServer2019下IIS+PHP配置教程</title>
+      <link href="/2021/12/17/windows-iis-php/"/>
+      <url>/2021/12/17/windows-iis-php/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><table><thead><tr><th>Software</th><th>PHP</th><th>IIS</th></tr></thead><tbody><tr><td>Link</td><td><a href="https://windows.php.net/download">PHP For Windows: Binaries and sources Releases</a></td><td><a href="https://www.iis.net/">Home : The Official Microsoft IIS Site</a></td></tr><tr><td>Version</td><td>8.1.1</td><td>10.0</td></tr></tbody></table><ol><li>首先安装WEB服务与应用程序开发功能中的CGI</li></ol><p><a href="https://imgtu.com/i/Tiz0Z8"><img src="https://s4.ax1x.com/2021/12/17/Tiz0Z8.png" alt="Tiz0Z8.png"></a></p><ol start="2"><li>下载PHP </li></ol><p><a href="https://imgtu.com/i/TizOL6"><img src="https://s4.ax1x.com/2021/12/17/TizOL6.png" alt="TizOL6.png"></a></p><p>下载得到 php-8.1.1-nts-Win32-vs16-x64.zip</p><p><a href="https://imgtu.com/i/TFSNY4"><img src="https://s4.ax1x.com/2021/12/17/TFSNY4.png" alt="TFSNY4.png"></a></p><p>解压到当前目录php文件夹下</p><p><a href="https://imgtu.com/i/TFPPN8"><img src="https://s4.ax1x.com/2021/12/17/TFPPN8.png" alt="TFPPN8.png"></a></p><p>找到php.ini-development，改名为php.ini，用文本编辑器打开</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 找到 ; extension_dir = &quot;./&quot; 将前面的；去掉，并替换双引号里的内容为</span></span><br><span class="line"><span class="attr">extension_dir</span> = <span class="string">&quot;C:/php/ext&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#2. 找到 ;cgi.force_redirect = 1 去掉; 改为</span></span><br><span class="line"><span class="attr">cgi.force_redirect</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#3. 找到 ;cgi.fix_pathinfo=1 去掉前面的；</span></span><br><span class="line"><span class="attr">cgi.fix_pathinfo</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#4. 找到 ;fastcgi.impersonate = 1 去掉前面的；</span></span><br><span class="line"><span class="attr">fastcgi.impersonate</span> = <span class="number">1</span></span><br></pre></td></tr></table></figure><p>修改好的配置文件 点击下载<a href="https://www.lanzoul.com/iDDzbxp2sbe">php.txt - 蓝奏云 (lanzoul.com)</a></p><ol start="3"><li>因为php-8.1.1需要vs16（Visual Studio 2019）的支持，所以我们还要下载vs16 </li></ol><blockquote><p>PS：如何下载VS16请看这篇文章</p></blockquote><p><a href="https://imgtu.com/i/TF9AIS"><img src="https://s4.ax1x.com/2021/12/17/TF9AIS.png" alt="TF9AIS.png"></a></p><p><a href="https://imgtu.com/i/TF9uMn"><img src="https://s4.ax1x.com/2021/12/17/TF9uMn.png" alt="TF9uMn.png"></a></p><p>安装VS16（自动联网下载即可）</p><p><a href="https://imgtu.com/i/TF9heP"><img src="https://s4.ax1x.com/2021/12/17/TF9heP.png" alt="TF9heP.png"></a></p><p>安装成功</p><p><a href="https://imgtu.com/i/TF9xoT"><img src="https://s4.ax1x.com/2021/12/17/TF9xoT.png" alt="TF9xoT.png"></a></p><ol start="4"><li>配置IIS管理器</li></ol><p>打开IIS管理器 并且打开处理程序映射</p><p><a href="https://imgtu.com/i/TFPk9g"><img src="https://s4.ax1x.com/2021/12/17/TFPk9g.png" alt="TFPk9g.png"></a></p><p><strong>点击”处理程序映射“</strong></p><p><a href="https://imgtu.com/i/TFPnH0"><img src="https://s4.ax1x.com/2021/12/17/TFPnH0.png" alt="TFPnH0.png"></a></p><p><strong>点击”添加模块映射“</strong></p><p><a href="https://imgtu.com/i/TFPcDI"><img src="https://s4.ax1x.com/2021/12/17/TFPcDI.png" alt="TFPcDI.png"></a></p><ol start="5"><li>测试</li></ol><p><a href="https://imgtu.com/i/TFFmkV"><img src="https://s4.ax1x.com/2021/12/17/TFFmkV.png" alt="TFFmkV.png"></a></p><p>修改默认网站</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#删除默认网站下的默认网页文件，创建文件index.php，文件内容如下</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"> phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><a href="https://imgtu.com/i/TFFcAP"><img src="https://s4.ax1x.com/2021/12/17/TFFcAP.png" alt="TFFcAP.png"></a></p><p>用浏览器进行浏览测试</p><p><a href="https://imgtu.com/i/TFFX3F"><img src="https://s4.ax1x.com/2021/12/17/TFFX3F.png" alt="TFFX3F.png"></a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Windows </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> WindowServer2019 </tag>
+            
+            <tag> PHP </tag>
+            
+            <tag> IIS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>PHP版本Non Thread Safe和Thread Safe如何选择？区别是什么？</title>
       <link href="/2021/12/17/php-thread-safe-difference/"/>
       <url>/2021/12/17/php-thread-safe-difference/</url>
