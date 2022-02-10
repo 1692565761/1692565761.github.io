@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.hnswxx.cn/2022/02/10/debian11-cryptsetup/</loc>
+    
+    <lastmod>2022-02-10</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.hnswxx.cn/2021/12/17/windows-iis-php/</loc>
     
     <lastmod>2021-12-17</lastmod>
@@ -376,6 +383,20 @@
   
   <url>
     <loc>https://www.hnswxx.cn/tags/IIS/</loc>
+    <lastmod>2022-02-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/cryptsetup/</loc>
+    <lastmod>2022-02-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.hnswxx.cn/tags/Debian11/</loc>
     <lastmod>2022-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
